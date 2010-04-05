@@ -15,9 +15,9 @@ run: ned86.exe
 	@./ned86.exe
 
 %.o : %.d
-	@gdc -c $<
+	@gdc -c -I$(SRCDIR) $<
 
-ned86.exe: main.o
+ned86.exe: main.o archstate.o cpu.o
 	@gdc -o $@ $^
 
 #--- Begin boilerplate
