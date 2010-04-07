@@ -9,16 +9,19 @@ VPATH = $(SRCDIR)
 #--- Normal make stuff here!
 .PHONY: all run
 
+CFLAGS := -I$(SRCDIR) -Wall -g
+LFLAGS := -g
+
 all: ned86.exe
 
 run: ned86.exe
 	@./ned86.exe
 
 %.o : %.d
-	@gdc -c -I$(SRCDIR) $<
+	@gdc -c $(CFLAGS) $<
 
-ned86.exe: main.o archstate.o cpu.o
-	@gdc -o $@ $^
+ned86.exe: main.o archstate.o cpu.o inst.o
+	@gdc $(LFLAGS) -o $@ $^
 
 #--- Begin boilerplate
 endif

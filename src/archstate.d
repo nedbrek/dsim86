@@ -24,6 +24,19 @@ enum SegReg
 	FS, GS, HS, none
 }
 
+enum RegSet
+{
+	GP,
+	FLAGS,
+	IP,
+	X87,
+	SSE,
+	CR,
+	DR,
+	MSR,
+	CPUID
+}
+
 /**
  decode the modrm byte into its fields
 	16 bit
@@ -49,17 +62,17 @@ struct ByteModRM
 
 	ubyte rm()
 	{
-		return all & 7;
+		return cast(ubyte)(all & 7);
 	}
 
 	ubyte reg()
 	{
-		return (all >> 3) & 7;
+		return cast(ubyte)((all >> 3) & 7);
 	}
 
 	ubyte mod()
 	{
-		return (all >> 6) & 3;
+		return cast(ubyte)((all >> 6) & 3);
 	}
 
 	bool hasMem()
@@ -80,17 +93,17 @@ struct Sib
 
 	ubyte scale()
 	{
-		return (all >> 6) & 3;
+		return cast(ubyte)((all >> 6) & 3);
 	}
 
 	ubyte idx()
 	{
-		return (all >> 3) & 7;
+		return cast(ubyte)((all >> 3) & 7);
 	}
 
 	ubyte base()
 	{
-		return all & 7;
+		return cast(ubyte)(all & 7);
 	}
 }
 
@@ -147,6 +160,8 @@ interface ArchState
 	ubyte * getByteReg (ubyte regspec);
 	ushort* getWordReg (ubyte regspec);
 	ulong * getQWordReg(ubyte regspec);
+
+	ulong* getOtherReg(RegSet s, ubyte idx);
 
 	ubyte * getByteMem (MemSpec* memspec);
 	ushort* getWordMem (MemSpec* memspec);
