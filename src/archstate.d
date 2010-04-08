@@ -14,7 +14,10 @@ enum RegNames
 enum RegBytes
 {
 	AL, CL, DL, BL,
-	AH, CH, DH, BH
+	AH, CH, DH, BH // no REX
+	SPL, BPL, SIL, DIL, // REX = 0
+	R8L, R9L, R10L, R11L, // REX = 1
+	R12L, R13L, R14L, R15L
 }
 
 /// segment register names
@@ -161,7 +164,7 @@ interface ArchState
 	ushort* getWordReg (ubyte regspec);
 	ulong * getQWordReg(ubyte regspec);
 
-	ulong* getOtherReg(RegSet s, ubyte idx);
+	ulong* getOtherReg(RegSet s, uint idx);
 
 	ubyte * getByteMem (MemSpec* memspec);
 	ushort* getWordMem (MemSpec* memspec);

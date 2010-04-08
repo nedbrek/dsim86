@@ -32,17 +32,40 @@ protected:
 
 	class ArchStateAdapt : ArchState
 	{
-		ubyte * getByteReg (ubyte regspec) { return null; }
-		ushort* getWordReg (ubyte regspec) { return null; }
-		ulong * getQWordReg(ubyte regspec) { return null; }
+		ubyte* getByteReg(ubyte regspec)
+		{
+			// first for low regs
+			if(regspec <= BL )
+				return &gp_[regspec]._.l;
 
-		ulong* getOtherReg(RegSet s, ubyte idx)
+			// high regs
+			if( AH <= regspec && regspec <= BH )
+				return &gp_[regspec-AH]._.h;
+
+			// remain low regs
+			return &gp_[regspec-AH]._.l;
+		}
+
+		ushort* getWordReg(ubyte regspec)
+		{
+			return &gp_[regspec].x;
+		}
+
+		ulong* getQWordReg(ubyte regspec)
+		{
+			return &gp_[regspec].rx;
+		}
+
+		ulong* getOtherReg(RegSet s, uint idx)
 		{
 			switch( s )
 			{
-			case RegSet.IP   : return &ip_;
 			case RegSet.FLAGS: return &flags_;
-			case RegSet.CR   : return &cr_[idx];
+			case RegSet.IP   : return &ip_;
+
+			case RegSet.CR   : return & cr_[idx];
+			case RegSet.DR   : return & dr_[idx];
+			case RegSet.MSR  : return &msr_[idx];
 
 			default:;
 			}

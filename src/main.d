@@ -9,7 +9,7 @@ void main(char[][] argv)
 {
 	writefln("Begin");
 
-	archstate.ByteModRM modrm;
+	ByteModRM modrm;
 	modrm.all = 0xb1;
 	writefln("Modrm ", modrm.mod, ' ', modrm.reg, ' ', modrm.rm);
 
@@ -21,7 +21,7 @@ void main(char[][] argv)
 	flags.CF = 1;
 	writefln("Flags: ", flags.CF);
 
-	cpu.Cpu c = new cpu.Cpu;
+	Cpu c = new Cpu;
 	cpu.Parms p;
 	c.init(&p);
 
