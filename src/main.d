@@ -1,5 +1,6 @@
 import archstate;
 import cpu;
+import instfact;
 import std.stdio;
 
 /** x86 simulator
@@ -26,12 +27,20 @@ void main(char[][] argv)
 	c.init(&p);
 
 	ubyte[] img;
-	img.length = 2;
+	img.length = 3;
 	img[0] = 0xeb;
 	img[1] = 0x3c;
+	img[2] = 0x90;
 	c.loadImage(img, 0x7c00);
 
 	c.setIP(0x7c00);
+	c.printNextIByte();
+
+	auto i = instFact(c.getAA());
+	char[] dstr;
+	i.disasm(c.getAA(), dstr);
+	writefln("Disasm: ", dstr);
+
 	c.printNextIByte();
 
 	writefln("End");

@@ -23,7 +23,7 @@ protected:
 	ulong cr_[16];
 	ulong dr_[16];
 
-	uint[uint] msr_;
+	ulong[uint] msr_; //Ned, could be uint, need other access
 	//Ned cpuid
 
 	ulong ip_;
@@ -35,15 +35,15 @@ protected:
 		ubyte* getByteReg(ubyte regspec)
 		{
 			// first for low regs
-			if(regspec <= BL )
+			if(regspec <= RegBytes.BL )
 				return &gp_[regspec]._.l;
 
 			// high regs
-			if( AH <= regspec && regspec <= BH )
-				return &gp_[regspec-AH]._.h;
+			if( RegBytes.AH <= regspec && regspec <= RegBytes.BH )
+				return &gp_[regspec-RegBytes.AH]._.h;
 
 			// remain low regs
-			return &gp_[regspec-AH]._.l;
+			return &gp_[regspec-RegBytes.AH]._.l;
 		}
 
 		ushort* getWordReg(ubyte regspec)

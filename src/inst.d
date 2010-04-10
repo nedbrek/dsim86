@@ -29,11 +29,3 @@ interface Inst86
 	void disasm (ArchState a, out char[] str);
 }
 
-Inst86 instFact(ArchState a)
-{
-	ulong *flags = a.getOtherReg(RegSet.FLAGS, 0);
-
-	return null;
-}
-
-
