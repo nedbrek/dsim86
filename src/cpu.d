@@ -15,21 +15,36 @@ struct Parms
 
 class Cpu
 {
-protected:
+protected: // data
 	Reg86 gp_[16];
 	ulong flags_;
 	//Ned x87
 	//Ned sse
+	SegReg segs_[6];
 	ulong cr_[16];
 	ulong dr_[16];
 
 	ulong[uint] msr_; //Ned, could be uint, need other access
 	//Ned cpuid
 
-	ulong ip_;
+	ulong ip_ = 0xfff0; // power on value
 
 	ubyte[] mem_;
 
+protected: // methods
+	ulong formIP_EA()
+	{
+		auto seg = segs_[SegReg.Name.CS];
+
+		ulong ret = seg.base_;
+
+		ret += seg.val_ << 4;
+		ret += ip_;
+
+		return ret;
+	}
+
+protected: // types
 	class ArchStateAdapt : ArchState
 	{
 		ubyte* getByteReg(ubyte regspec)
@@ -56,6 +71,11 @@ protected:
 			return &gp_[regspec].rx;
 		}
 
+		SegReg* getSegReg(SegReg.Name idx)
+		{
+			return &segs_[idx];
+		}
+
 		ulong* getOtherReg(RegSet s, uint idx)
 		{
 			switch( s )
@@ -79,7 +99,7 @@ protected:
 		/// advance IP
 		ubyte getNextIByte()
 		{
-			ubyte ret = mem_[cast(uint)ip_];
+			ubyte ret = peekNextIByte();
 			++ip_;
 
 			return ret;
@@ -88,7 +108,7 @@ protected:
 		/// do not
 		ubyte peekNextIByte()
 		{
-			return mem_[cast(uint)ip_];
+			return mem_[cast(uint)formIP_EA()];
 		}
 	}
 
@@ -98,6 +118,7 @@ public:
 	this()
 	{
 		flags_ = 2;
+		segs_[SegReg.Name.CS].val_ = 0xf000;
 
 		aa_ = new ArchStateAdapt;
 	}
@@ -119,6 +140,7 @@ public:
 		mem_[cast(uint)startAddr..cast(uint)(startAddr+img.length)] = img;
 	}
 
+	/// intended for testing
 	void setIP(ulong ip)
 	{
 		ip_ = ip;
@@ -126,7 +148,8 @@ public:
 
 	void printNextIByte()
 	{
-		writefln("%x", ip_, ':', "%x", mem_[cast(uint)ip_]);
+		writefln("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
+		    "%x", mem_[cast(uint)formIP_EA()]);
 	}
 }
 

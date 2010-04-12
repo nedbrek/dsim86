@@ -63,3 +63,56 @@ Inst86 jmpI(Prefixes *p, ubyte op, ArchState a)
 	return ret;
 }
 
+class FarJmp : public Inst86
+{
+protected:
+	uint   off_;
+	ushort seg_;
+
+public:
+	void init(in Prefixes *p, ubyte op, ArchState a)
+	{
+		ubyte b = a.getNextIByte();
+		off_ = b;
+
+		b = a.getNextIByte();
+		off_ |= b << 8;
+
+		b = a.getNextIByte();
+		seg_ = b;
+		b = a.getNextIByte();
+		seg_ |= b << 8;
+	}
+
+	MemType getMemType() { return MemType.NONE; }
+	MemSpec getMemRef () { MemSpec ret; return ret; }
+
+	uint    numDest() { return 0; }
+	uint    numSrc () { return 0; }
+
+	ubyte getSrc(uint idx) { return 0; }
+	ubyte getDst(uint idx) { return 0; }
+
+	void execute(ArchState a)
+	{
+		SegReg *s = a.getSegReg(SegReg.Name.CS);
+		s.val_ = seg_;
+		ulong *ip = a.getOtherReg(RegSet.IP, 0);
+		*ip = off_;
+	}
+
+	void disasm(ArchState a, out char[] str)
+	{
+		str.length = "jmpf".length;
+		str[] = "jmpf";
+	}
+}
+
+Inst86 jmpF(Prefixes *p, ubyte op, ArchState a)
+{
+	auto ret = new FarJmp;
+	ret.init(p, op, a);
+
+	return ret;
+}
+

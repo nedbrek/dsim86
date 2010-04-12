@@ -1,6 +1,7 @@
 import archstate;
 import cpu;
 import instfact;
+import std.file;
 import std.stdio;
 
 /** x86 simulator
@@ -26,20 +27,23 @@ void main(char[][] argv)
 	cpu.Parms p;
 	c.init(&p);
 
-	ubyte[] img;
-	img.length = 3;
-	img[0] = 0xeb;
-	img[1] = 0x3c;
-	img[2] = 0x90;
-	c.loadImage(img, 0x7c00);
+	void[] img = read("c:/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
+	c.loadImage(cast(ubyte[])img, 0xe_0000);
 
-	c.setIP(0x7c00);
 	c.printNextIByte();
 
 	auto i = instFact(c.getAA());
-	char[] dstr;
-	i.disasm(c.getAA(), dstr);
-	writefln("Disasm: ", dstr);
+	if( i is null )
+	{
+		writefln("Null decode");
+	}
+	else
+	{
+		char[] dstr;
+		i.disasm(c.getAA(), dstr);
+		writefln("Disasm: ", dstr);
+		i.execute(c.getAA());
+	}
 
 	c.printNextIByte();
 

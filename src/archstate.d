@@ -21,10 +21,17 @@ enum RegBytes
 }
 
 /// segment register names
-enum SegReg
+struct SegReg
 {
-	ES, CS, SS, DS,
-	FS, GS, HS, none
+	enum Name : ubyte
+	{
+		ES, CS, SS, DS,
+		FS, GS, HS, none
+	}
+
+	ushort val_;
+	uint   base_;
+	uint   limit_;
 }
 
 enum RegSet
@@ -139,7 +146,7 @@ struct Prefixes
 	bool   lock;
 	bool   repne;
 	bool   repe;
-	SegReg seg = SegReg.none;
+	SegReg.Name seg = SegReg.Name.none;
 	bool   wordOver;
 	bool   awordOver;
 }
@@ -152,7 +159,7 @@ struct MemSpec
 	Sib       sib;
 	ubyte     rex;
 
-	ubyte     seg = SegReg.DS;
+	ubyte     seg = SegReg.Name.DS;
 	bool      lock;
 	bool      wordOver;
 	bool      awordOver;
@@ -163,6 +170,8 @@ interface ArchState
 	ubyte * getByteReg (ubyte regspec);
 	ushort* getWordReg (ubyte regspec);
 	ulong * getQWordReg(ubyte regspec);
+
+	SegReg* getSegReg(SegReg.Name idx);
 
 	ulong* getOtherReg(RegSet s, uint idx);
 

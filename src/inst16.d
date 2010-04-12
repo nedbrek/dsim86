@@ -15,6 +15,7 @@ protected:
 public:
 	this()
 	{
+		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
 	}
 
