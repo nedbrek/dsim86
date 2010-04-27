@@ -30,19 +30,24 @@ void main(char[][] argv)
 	void[] img = read("c:/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
 	c.loadImage(cast(ubyte[])img, 0xe_0000);
 
-	c.printNextIByte();
+	writefln("Start execute");
 
-	auto i = instFact(c.getAA());
-	if( i is null )
+	for(uint ct = 0; ct < 2; ++ct)
 	{
-		writefln("Null decode");
-	}
-	else
-	{
-		char[] dstr;
-		i.disasm(c.getAA(), dstr);
-		writefln("Disasm: ", dstr);
-		i.execute(c.getAA());
+		c.printNextIByte();
+
+		auto i = instFact(c.getAA());
+		if( i is null )
+		{
+			writefln("Null decode");
+		}
+		else
+		{
+			char[] dstr;
+			i.disasm(c.getAA(), dstr);
+			writefln("Disasm: ", dstr);
+			i.execute(c.getAA());
+		}
 	}
 
 	c.printNextIByte();
