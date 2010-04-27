@@ -1,5 +1,6 @@
 module inst16;
 
+import alu;
 import archstate;
 import inst;
 import jump;
@@ -15,6 +16,12 @@ protected:
 public:
 	this()
 	{
+		for(ubyte i = 0; i < 0x4f; ++i)
+		{
+			if( (i & 6) != 6 )
+				decoder_[i] = &aluFun;
+		}
+
 		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
 	}

@@ -11,7 +11,7 @@ VPATH = $(SRCDIR)
 
 CFLAGS := -I$(SRCDIR) -Wall -g
 LFLAGS := -g
-OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o jump.o
+OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o jump.o alu.o
 
 all: ned86.exe
 
