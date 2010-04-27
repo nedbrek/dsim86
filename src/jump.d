@@ -39,8 +39,8 @@ public:
 	MemType getMemType() { return MemType.NONE; }
 	MemSpec getMemRef () { MemSpec ret; return ret; }
 
-	uint    numDest() { return 0; }
-	uint    numSrc () { return cond_ == CC.NONE ? 1 : 0; }
+	uint    numDst() { return 0; }
+	uint    numSrc() { return cond_ == CC.NONE ? 1 : 0; }
 
 	ubyte getSrc(uint idx) { return 0; }
 	ubyte getDst(uint idx) { return 0; }
@@ -88,8 +88,8 @@ public:
 	MemType getMemType() { return MemType.NONE; }
 	MemSpec getMemRef () { MemSpec ret; return ret; }
 
-	uint    numDest() { return 0; }
-	uint    numSrc () { return 0; }
+	uint    numDst() { return 0; }
+	uint    numSrc() { return 0; }
 
 	ubyte getSrc(uint idx) { return 0; }
 	ubyte getDst(uint idx) { return 0; }

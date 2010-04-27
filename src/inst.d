@@ -19,8 +19,8 @@ interface Inst86
 
 	MemSpec getMemRef();
 
-	uint numDest(); /// 2 -> DX:AX *= reg
-	uint numSrc (); /// not counting mem
+	uint numDst(); /// 2 -> DX:AX *= reg
+	uint numSrc(); /// not counting mem
 
 	ubyte getSrc(uint idx);
 	ubyte getDst(uint idx);
