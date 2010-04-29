@@ -11,6 +11,8 @@ interface Inst86
 		READ,       /// load or load-op
 		WRITE,      /// store
 		RMW,        /// load-op-store
+		IO_READ,
+		IO_WRITE,
 		READ_MANY,  /// string read  (cmps)
 		WRITE_MANY, /// string store (stos)
 		RW_MANY     /// memcopy
