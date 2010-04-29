@@ -51,8 +51,7 @@ public:
 
 	void disasm(ArchState a, out char[] str)
 	{
-		str.length = "jmp".length;
-		str[] = "jmp";
+		str ~= "jmp";
 	}
 }
 
@@ -96,8 +95,7 @@ public:
 
 	void disasm(ArchState a, out char[] str)
 	{
-		str.length = "jmpf ".length;
-		str[] = "jmpf ";
+		str ~= "jmpf ";
 		str ~= std.string.toString(cast(ulong)seg_, 16u);
 		str ~= ":";
 		str ~= std.string.toString(cast(ulong)off_, 16u);
