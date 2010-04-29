@@ -20,6 +20,11 @@ enum RegBytes
 	R12L, R13L, R14L, R15L
 }
 
+enum OpSz
+{
+	BYTE, WORD, DWORD, QWORD, OWORD
+}
+
 /// segment register names
 struct SegReg
 {
@@ -141,8 +146,19 @@ struct Flags86
 	void CF(bool b) { all |= b ? 1 : 0; }
 }
 
+struct Rex
+{
+	ubyte all;
+
+	bool B() { return (all & 1) != 0; }
+	bool X() { return (all & 2) != 0; }
+	bool R() { return (all & 4) != 0; }
+	bool W() { return (all & 8) != 0; }
+}
+
 struct Prefixes
 {
+	Rex    rex;
 	bool   lock;
 	bool   repne;
 	bool   repe;
@@ -181,5 +197,14 @@ interface ArchState
 
 	ubyte  getNextIByte(); /// advance IP
 	ubyte peekNextIByte(); /// do not
+}
+
+ushort getIword(ArchState a)
+{
+	ushort ret = a.getNextIByte();
+
+	ret |= a.getNextIByte() << 8;
+
+	return ret;
 }
 

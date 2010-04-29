@@ -73,16 +73,8 @@ protected:
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
-		ubyte b = a.getNextIByte();
-		off_ = b;
-
-		b = a.getNextIByte();
-		off_ |= b << 8;
-
-		b = a.getNextIByte();
-		seg_ = b;
-		b = a.getNextIByte();
-		seg_ |= b << 8;
+		off_ = getIword(a);
+		seg_ = getIword(a);
 	}
 
 	MemType getMemType() { return MemType.NONE; }

@@ -2,6 +2,7 @@ module alu;
 
 import archstate;
 import inst;
+import std.string;
 
 private:
 alias ulong function(ArchState a, Inst86.MemType mt, in MemSpec *ops)
@@ -52,6 +53,7 @@ class AluOp : Inst86
 	MemSpec  ops_;
 	MemType  mt_;
 	ubyte    op_;
+	OpSz     sz_;
 
 	static AluFun[8] funcs = [
 		&add, &or,  &adc, &sbb,
@@ -67,6 +69,71 @@ public:
 	void init(Prefixes *p, ubyte op, ArchState a)
 	{
 		op_ = cast(ubyte)((op >> 3) & 7);
+
+		// bit0 -> b(0) : v(1)
+		if( op & 1 )
+		{
+			// vord
+			if( p.rex.W )
+			{
+				sz_ = OpSz.QWORD;
+			}
+			else
+			{
+				bool use16 = true;
+				if( p.wordOver )
+				{
+					use16 = false;
+				}
+
+				sz_ = use16 ? OpSz.WORD : OpSz.DWORD;
+			}
+		}
+		else
+		{
+			sz_ = OpSz.BYTE;
+		}
+
+		switch( op & 6 )
+		{
+		case 0: // mr
+		case 2: // rm
+			mt_ = (op & 6) ? MemType.READ : MemType.RMW;
+			ops_.mrm.all = a.getNextIByte();
+			switch( ops_.mrm.mod )
+			{
+			case 0: // no offset, except BP(6)
+				if( ops_.mrm.rm == 6 )
+					ops_.imm = getIword(a);
+				break;
+
+			case 1: // 8b
+				ops_.imm = a.getNextIByte();
+				break;
+
+			case 2: // 16b
+				ops_.imm = getIword(a);
+				break;
+
+			default:
+			}
+			break;
+
+		case 4: // ai
+			mt_ = MemType.NONE;
+			if( sz_ == OpSz.BYTE )
+			{
+				ops_.imm = a.getNextIByte();
+			}
+			else
+			{
+				ops_.imm = getIword(a);
+			}
+			break;
+
+		default:
+			assert(false);
+		}
 	}
 
 	MemType getMemType() { return mt_; }
@@ -87,6 +154,8 @@ public:
 	void disasm(ArchState a, out char[] str)
 	{
 		str = names[op_];
+		str ~= " ";
+		str ~= std.string.toString(cast(ulong)ops_.mrm.all, 16u);
 	}
 }
 
