@@ -3,6 +3,7 @@ module inst16;
 import alu;
 import archstate;
 import inst;
+import io;
 import jump;
 import std.stdio;
 
@@ -21,6 +22,15 @@ public:
 			if( (i & 6) != 6 )
 				decoder_[i] = &aluFun;
 		}
+
+		decoder_[0xe4] = &ioFun;
+		decoder_[0xe5] = &ioFun;
+		decoder_[0xe6] = &ioFun;
+		decoder_[0xe7] = &ioFun;
+		decoder_[0xec] = &ioFun;
+		decoder_[0xed] = &ioFun;
+		decoder_[0xee] = &ioFun;
+		decoder_[0xef] = &ioFun;
 
 		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
