@@ -67,7 +67,7 @@ public:
 			else                     str ~= "X, ";
 
 			if( useDx_ ) str ~= "DX";
-			else         str ~= "Ib";
+			else         str ~= std.string.format("0x%02X", imm_);
 		}
 	}
 }
