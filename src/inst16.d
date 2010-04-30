@@ -5,6 +5,7 @@ import archstate;
 import inst;
 import io;
 import jump;
+import mov;
 import std.stdio;
 
 class InstFact
@@ -21,6 +22,11 @@ public:
 		{
 			if( (i & 6) != 6 )
 				decoder_[i] = &aluFun;
+		}
+
+		for(ubyte i = 0xb0; i < 0xbf; ++i)
+		{
+			decoder_[i] = &movF;
 		}
 
 		decoder_[0xe4] = &ioFun;
