@@ -44,6 +44,7 @@ enum RegSet
 	GP,
 	FLAGS,
 	IP,
+	SEG,
 	X87,
 	SSE,
 	CR,
