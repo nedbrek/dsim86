@@ -148,7 +148,7 @@ public:
 
 	void printNextIByte()
 	{
-		writefln("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
+		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
 		    "%x", mem_[cast(uint)formIP_EA()]);
 	}
 }

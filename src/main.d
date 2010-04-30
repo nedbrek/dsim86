@@ -32,7 +32,7 @@ void main(char[][] argv)
 
 	writefln("Start execute");
 
-	for(uint ct = 0; ct < 2; ++ct)
+	for(uint ct = 0; ct < 4; ++ct)
 	{
 		c.printNextIByte();
 
@@ -45,12 +45,13 @@ void main(char[][] argv)
 		{
 			char[] dstr;
 			i.disasm(c.getAA(), dstr);
-			writefln("Disasm: ", dstr);
+			writefln(" ", dstr);
 			i.execute(c.getAA());
 		}
 	}
 
 	c.printNextIByte();
+	writefln();
 
 	writefln("End");
 }
