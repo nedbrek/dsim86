@@ -12,6 +12,7 @@ class MovInst : Inst86
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
+		// mov +r = i
 		if( 0xb0 <= op && op <= 0xbf )
 		{
 			OpSz sz = OpSz.BYTE;
@@ -28,6 +29,36 @@ public:
 			}
 
 			dst_ = new RegOp(RegSet.GP, cast(ubyte)(op & 7), sz);
+		}
+
+		// mov reg and mem
+		if( 0x88 <= op && op <= 0x8b )
+		{
+			OpSz sz = OpSz.BYTE;
+			if( op & 1 )
+			{
+				//Ned, DWORD
+				sz = OpSz.WORD;
+			}
+
+			ByteModRM mrm;
+			mrm.all = a.getNextIByte();
+			auto reg = new RegOp(RegSet.GP, mrm.reg, sz);
+
+			auto rm = decodeMRM(a, mrm, sz, OpMode.MD16);
+
+			if( op & 2 )
+			{
+				// reg = mem
+				dst_ = reg;
+				src_ = rm;
+			}
+			else
+			{
+				// mem = reg
+				dst_ = rm;
+				src_ = reg;
+			}
 		}
 	}
 
@@ -47,6 +78,9 @@ public:
 	void disasm(ArchState a, out char[] str)
 	{
 		str ~= "mov ";
+		dst_.disasm(str);
+		str ~= ", ";
+		src_.disasm(str);
 	}
 }
 
