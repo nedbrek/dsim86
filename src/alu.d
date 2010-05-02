@@ -2,58 +2,58 @@ module alu;
 
 import archstate;
 import inst;
+import operand;
 import std.string;
 
 private:
-alias ulong function(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+alias ulong function(ArchState a, Operand dst, Operand src)
    AluFun;
 
-ulong add(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong add(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong adc(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong adc(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong and(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong and(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong xor(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong xor(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong or(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong or(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong sbb(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong sbb(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong sub(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong sub(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
-ulong cmp(ArchState a, Inst86.MemType mt, in MemSpec *ops)
+ulong cmp(ArchState a, Operand dst, Operand src)
 {
 	return 0;
 }
 
 class AluOp : Inst86
 {
-	MemSpec  ops_;
-	MemType  mt_;
+	Operand dst_;
+	Operand src_;
 	ubyte    op_;
-	OpSz     sz_;
 
 	static AluFun[8] funcs = [
 		&add, &or,  &adc, &sbb,
@@ -70,13 +70,14 @@ public:
 	{
 		op_ = cast(ubyte)((op >> 3) & 7);
 
+		OpSz sz;
 		// bit0 -> b(0) : v(1)
 		if( op & 1 )
 		{
 			// vord
 			if( p.rex.W )
 			{
-				sz_ = OpSz.QWORD;
+				sz = OpSz.QWORD;
 			}
 			else
 			{
@@ -86,49 +87,47 @@ public:
 					use16 = false;
 				}
 
-				sz_ = use16 ? OpSz.WORD : OpSz.DWORD;
+				sz = use16 ? OpSz.WORD : OpSz.DWORD;
 			}
 		}
 		else
 		{
-			sz_ = OpSz.BYTE;
+			sz = OpSz.BYTE;
 		}
+
+		if( (op & 6) == 4 )
+		{
+			// ai
+			dst_ = new RegOp(RegSet.GP, 0, sz);
+
+			if( sz == OpSz.BYTE )
+			{
+				src_ = new ImmOp(a.getNextIByte());
+			}
+			else
+			{
+				src_ = new ImmOp(getIword(a));
+			}
+
+			return;
+		}
+
+		ByteModRM mrm;
+		mrm.all = a.getNextIByte();
+
+		auto reg = new RegOp(RegSet.GP, mrm.reg, sz);
+		auto rm  = decodeMRM(a, mrm, sz, OpMode.MD16);
 
 		switch( op & 6 )
 		{
 		case 0: // mr
-		case 2: // rm
-			mt_ = (op & 6) ? MemType.READ : MemType.RMW;
-			ops_.mrm.all = a.getNextIByte();
-			switch( ops_.mrm.mod )
-			{
-			case 0: // no offset, except BP(6)
-				if( ops_.mrm.rm == 6 )
-					ops_.imm = getIword(a);
-				break;
-
-			case 1: // 8b
-				ops_.imm = a.getNextIByte();
-				break;
-
-			case 2: // 16b
-				ops_.imm = getIword(a);
-				break;
-
-			default:
-			}
+			dst_ = rm;
+			src_ = reg;
 			break;
 
-		case 4: // ai
-			mt_ = MemType.NONE;
-			if( sz_ == OpSz.BYTE )
-			{
-				ops_.imm = a.getNextIByte();
-			}
-			else
-			{
-				ops_.imm = getIword(a);
-			}
+		case 2: // rm
+			dst_ = reg;
+			src_ = rm;
 			break;
 
 		default:
@@ -136,8 +135,8 @@ public:
 		}
 	}
 
-	MemType getMemType() { return mt_; }
-	MemSpec getMemRef()  { return ops_; }
+	MemType getMemType() { return MemType.NONE; }
+	MemSpec getMemRef()  { MemSpec ret; return ret; }
 
 	uint numDst() { return 1; }
 	uint numSrc() { return 2; }
@@ -147,7 +146,7 @@ public:
 
 	void execute(ArchState a)
 	{
-		ulong res = funcs[op_](a, mt_, &ops_);
+		ulong res = funcs[op_](a, dst_, src_);
 		// compute flags on result
 	}
 
@@ -155,7 +154,9 @@ public:
 	{
 		str = names[op_];
 		str ~= " ";
-		str ~= std.string.toString(cast(ulong)ops_.mrm.all, 16u);
+		dst_.disasm(str);
+		str ~= ", ";
+		src_.disasm(str);
 	}
 }
 
