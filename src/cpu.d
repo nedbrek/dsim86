@@ -94,6 +94,7 @@ protected: // types
 
 		ubyte * getByteMem (MemSpec* memspec) { return null; }
 		ushort* getWordMem (MemSpec* memspec) { return null; }
+		uint  * getDWordMem(MemSpec* memspec) { return null; }
 		ulong * getQWordMem(MemSpec* memspec) { return null; }
 
 		/// advance IP

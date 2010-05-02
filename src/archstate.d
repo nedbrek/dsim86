@@ -157,6 +157,13 @@ struct Rex
 	bool W() { return (all & 8) != 0; }
 }
 
+enum OpMode
+{
+	MD16,
+	MD32,
+	MD64
+}
+
 struct Prefixes
 {
 	Rex    rex;
@@ -194,6 +201,7 @@ interface ArchState
 
 	ubyte * getByteMem (MemSpec* memspec);
 	ushort* getWordMem (MemSpec* memspec);
+	uint  * getDWordMem(MemSpec* memspec);
 	ulong * getQWordMem(MemSpec* memspec);
 
 	ubyte  getNextIByte(); /// advance IP
