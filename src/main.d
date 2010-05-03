@@ -11,18 +11,6 @@ void main(char[][] argv)
 {
 	writefln("Begin");
 
-	ByteModRM modrm;
-	modrm.all = 0xb1;
-	writefln("Modrm ", modrm.mod, ' ', modrm.reg, ' ', modrm.rm);
-
-	Reg86 r;
-	r.rx = 0xdeadbeef_baadf00d;
-	writefln("Reg: ", r.rx, ' ', r.ex, ' ', r.x, ' ', r._.h, ' ', r._.l);
-
-	Flags86 flags;
-	flags.CF = 1;
-	writefln("Flags: ", flags.CF);
-
 	Cpu c = new Cpu;
 	cpu.Parms p;
 	c.init(&p);
@@ -31,27 +19,57 @@ void main(char[][] argv)
 	c.loadImage(cast(ubyte[])img, 0xe_0000);
 
 	writefln("Start execute");
-
-	for(uint ct = 0; ct < 18; ++ct)
-	{
-		c.printNextIByte();
-
-		auto i = instFact(c.getAA());
-		if( i is null )
-		{
-			writefln("Null decode");
-		}
-		else
-		{
-			char[] dstr;
-			i.disasm(c.getAA(), dstr);
-			writefln(" ", dstr);
-			i.execute(c.getAA());
-		}
-	}
+	char[] dstr;
 
 	c.printNextIByte();
-	writefln();
+
+	auto i = instFact(c.getAA());
+	if( i !is null )
+	{
+		i.disasm(c.getAA(), dstr);
+		writefln(" ", dstr);
+	}
+
+	char cmd = 's';
+
+	while( 1 )
+	{
+		char[] buf = readln();
+		if( buf[0] != '\n' )
+			cmd = buf[0];
+
+		switch( cmd )
+		{
+		case 'q': return;
+
+		case 'r':
+			c.printRegs(dstr);
+			writefln("\n", dstr, "\n");
+			break;
+
+		case 's':
+			if( i is null )
+			{
+				writefln("Null decode");
+				return;
+			}
+
+			i.execute(c.getAA());
+
+			c.printNextIByte();
+
+			i = instFact(c.getAA());
+			if( i !is null )
+			{
+				i.disasm(c.getAA(), dstr);
+				writefln(" ", dstr);
+			}
+
+			break;
+
+		default:
+		}
+	}
 
 	writefln("End");
 }
