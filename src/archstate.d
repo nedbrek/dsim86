@@ -1,6 +1,13 @@
 /// structures for handling x86 architectural state
 module archstate;
 
+enum CC
+{
+	O, NO,  C, NC, Z, NZ, BE, A,
+	S, NS, PE, PO, L, NL, LE, G,
+	NONE
+}
+
 /// descriptive names for gp registers
 enum RegNames
 {
@@ -215,5 +222,59 @@ ushort getIword(ArchState a)
 	ret |= a.getNextIByte() << 8;
 
 	return ret;
+}
+
+ulong signEx(ulong v, OpSz startSz, OpSz endSz)
+{
+	ulong ret = v;
+	ulong mask = 0xffff_ffff_ffff_ffff;
+
+	bool signBitSet = false;
+
+	switch( startSz )
+	{
+	case OpSz.BYTE:
+		signBitSet = (v & 128) != 0;
+		mask &= ~255;
+		break;
+
+	default:
+	}
+
+	if( signBitSet )
+	{
+		switch( endSz )
+		{
+		case OpSz.QWORD:
+			ret |= mask;
+			break;
+
+		default:
+		}
+	}
+
+	return ret;
+}
+
+void makeFlags(ulong res, ArchState a)
+{
+	ulong *flagP = a.getOtherReg(RegSet.FLAGS, 0);
+	if( res == 0 )
+		*flagP |= 0x20;
+	else
+		*flagP &= ~0x20;
+}
+
+bool checkCond(CC cond, ArchState a)
+{
+	ulong flags = *a.getOtherReg(RegSet.FLAGS, 0);
+	switch( cond )
+	{
+	case CC.Z : return  (flags & 0x20) != 0;
+	case CC.NZ: return  (flags & 0x20) == 0;
+
+	default:
+	}
+	return false;
 }
 

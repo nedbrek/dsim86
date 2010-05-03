@@ -7,15 +7,8 @@ import std.string;
 class JmpI : Inst86
 {
 protected:
-	enum CC
-	{
-		O, NO,  C, NC, Z, NZ, BE, A,
-		S, NS, PE, PO, L, NL, LE, G,
-		NONE
-	}
-
-	uint off_;
-	CC   cond_ = CC.NONE;
+	ulong off_;
+	CC    cond_ = CC.NONE;
 
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
@@ -23,7 +16,7 @@ public:
 		// jcc ib
 		if( 0x70 <= op && op <= 0x7f )
 		{
-			off_ = a.getNextIByte();
+			off_ = signEx(cast(ulong)a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
 			cond_ = cast(CC)(op - 0x70);
 
 			return;
@@ -32,7 +25,7 @@ public:
 		// jmp ib
 		if( op == 0xeb )
 		{
-			off_ = a.getNextIByte();
+			off_ = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
 		}
 	}
 
@@ -47,11 +40,24 @@ public:
 
 	void execute(ArchState a)
 	{
+		if( cond_ != CC.NONE )
+		{
+			if( !checkCond(cond_, a) )
+				return;
+		}
+
+		ulong *ip = a.getOtherReg(RegSet.IP, 0);
+		(*ip) += off_;
 	}
 
 	void disasm(ArchState a, out char[] str)
 	{
-		str ~= "jmp";
+		if( cond_ == CC.NONE )
+			str ~= "jmp";
+		else
+			str ~= std.string.format("j-%x", cond_);
+
+		str ~= std.string.format(" 0x%016x", off_);
 	}
 }
 
