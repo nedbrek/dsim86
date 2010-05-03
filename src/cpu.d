@@ -152,5 +152,21 @@ public:
 		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
 		    "%x", mem_[cast(uint)formIP_EA()]);
 	}
+
+	void printRegs(out char[] ostr)
+	{
+		uint ct = 0;
+		foreach(Reg86 r; gp_)
+		{
+			ostr ~= std.string.format("%016x ", r.rx);
+			++ct;
+			if( ct == 4 )
+			{
+				ostr ~= "\n";
+				ct = 0;
+			}
+		}
+		ostr ~= std.string.format("RFLAGS: %08x\n", flags_);
+	}
 }
 
