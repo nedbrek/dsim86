@@ -19,7 +19,7 @@ all: ned86.exe
 -include Depend.Make
 
 run: ned86.exe
-	@./ned86.exe
+	@./ned86.exe < $(SRCDIR)/in.cmd
 
 %.o : %.d
 	@gdc -c $(CFLAGS) $<
