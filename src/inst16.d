@@ -24,6 +24,11 @@ public:
 				decoder_[i] = &aluFun;
 		}
 
+		for(ubyte i = 0x70; i < 0x7f; ++i)
+		{
+			decoder_[i] = &jmpI;
+		}
+
 		for(ubyte i = 0x88; i < 0x8b; ++i)
 		{
 			decoder_[i] = &movF;
