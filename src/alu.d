@@ -46,7 +46,9 @@ ulong sub(ArchState a, Operand dst, Operand src)
 
 ulong cmp(ArchState a, Operand dst, Operand src)
 {
-	return 0;
+	ulong tmp = dst.read(a);
+	tmp -= src.read(a);
+	return tmp;
 }
 
 class AluOp : Inst86
@@ -148,6 +150,7 @@ public:
 	{
 		ulong res = funcs[op_](a, dst_, src_);
 		// compute flags on result
+		makeFlags(res, a);
 	}
 
 	void disasm(ArchState a, out char[] str)
