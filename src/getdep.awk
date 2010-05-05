@@ -6,6 +6,7 @@
 
 /^import / {
 	mod = $2
+	sub(/\./, "/", mod)
 	sub(/;$/, ".d", mod)
 
 	fn = FILENAME

@@ -11,8 +11,8 @@ VPATH = $(SRCDIR)
 
 CFLAGS := -I$(SRCDIR) -Wall -g
 LFLAGS := -g
-OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o jump.o alu.o \
-   io.o mov.o operand.o
+OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o operand.o \
+   insts/alu.o insts/io.o insts/jump.o insts/mov.o
 
 all: ned86.exe
 
@@ -25,6 +25,7 @@ run: ned86.exe
 	@gdc -c $(CFLAGS) $<
 
 ned86.exe: $(OBJS)
+	@$(MAKE) -C $(SRCDIR)/insts
 	@gdc $(LFLAGS) -o $@ $^
 
 #--- Begin boilerplate

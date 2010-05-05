@@ -1,11 +1,11 @@
 module inst16;
 
-import alu;
 import archstate;
 import inst;
-import io;
-import jump;
-import mov;
+import insts.alu;
+import insts.io;
+import insts.jump;
+import insts.mov;
 import std.stdio;
 
 class InstFact
@@ -65,13 +65,10 @@ public:
 
 			if( ifp is null )
 			{
-				writefln("Null in decoder for byte: ", "%x", op);
 				return null;
 			}
-			else
-			{
-				ret = (*ifp)(&p, op, a);
-			}
+
+			ret = (*ifp)(&p, op, a);
 		}
 
 		return ret;
