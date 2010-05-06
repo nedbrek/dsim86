@@ -154,7 +154,32 @@ public:
 
 	void disasm(inout char[] str)
 	{
-		str ~= "MEM";
+		str ~= "[";
+
+		bool hadReg = false;
+		if( base_ )
+		{
+			base_.disasm(str);
+			hadReg = true;
+		}
+		if( index_ )
+		{
+			if( hadReg )
+				str ~= "+";
+
+			index_.disasm(str);
+			hadReg = true;
+		}
+
+		if( imm_ != 0 )
+		{
+			if( hadReg )
+				str ~= "+";
+
+			str ~= std.string.format("%04x]", imm_);
+		}
+		else
+			str ~= "]";
 	}
 }
 
@@ -162,25 +187,63 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 {
 	if( mode == OpMode.MD16 )
 	{
-		auto base = new RegOp(RegSet.GP, mrm.rm, OpSz.WORD);
+		if( mrm.mod == 3 )
+			return new RegOp(RegSet.GP, mrm.rm, sz);
+
+		RegOp base;
+		RegOp index;
+		ulong imm;
+
+		switch( mrm.rm )
+		{
+		case 0:
+		case 1:
+			base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+6), OpSz.WORD);
+			index = new RegOp(RegSet.GP, 3,        OpSz.WORD);
+			break;
+
+		case 2:
+		case 3:
+			base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+4), OpSz.WORD);
+			index = new RegOp(RegSet.GP, 5,        OpSz.WORD);
+			break;
+
+		case 4:
+		case 5:
+			base = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+2), OpSz.WORD);
+			break;
+
+		case 6:
+			// BP needs offset or it is imm only
+			if( mrm.mod == 0 )
+				imm = getIword(a);
+			else
+				base = new RegOp(RegSet.GP, 5, OpSz.WORD);
+			break;
+
+		case 7:
+			base = new RegOp(RegSet.GP, 3, OpSz.WORD);
+			break;
+
+		default:
+		}
 
 		// no SIB
 		switch( mrm.mod )
 		{
-		case 0:
-			return new MemOp(sz, base);
+		case 1: // byte off
+			imm = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.WORD);
+			break;
 
-		case 1:
-			return new MemOp(sz, base);
+		case 2: // word off
+			imm = getIword(a);
+			break;
 
-		case 2:
-			return new MemOp(sz, base);
-
-		case 3:
-			return new RegOp(RegSet.GP, mrm.rm, sz);
-
+		case 0: // no imm
+		case 3: // reg, above
 		default:
 		}
+		return new MemOp(sz, base, imm, index);
 	}
 	return null;
 }
