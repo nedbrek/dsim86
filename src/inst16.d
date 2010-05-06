@@ -3,6 +3,7 @@ module inst16;
 import archstate;
 import inst;
 import insts.alu;
+import insts.flagop;
 import insts.io;
 import insts.jump;
 import insts.mov;
@@ -50,6 +51,14 @@ public:
 
 		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
+
+		decoder_[0xf5] = &flagF;
+		decoder_[0xf8] = &flagF;
+		decoder_[0xf9] = &flagF;
+		decoder_[0xfa] = &flagF;
+		decoder_[0xfb] = &flagF;
+		decoder_[0xfc] = &flagF;
+		decoder_[0xfd] = &flagF;
 	}
 
 	Inst86 makeInst(ArchState a)
