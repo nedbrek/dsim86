@@ -7,6 +7,7 @@ import insts.flagop;
 import insts.io;
 import insts.jump;
 import insts.mov;
+import insts.segop;
 import std.stdio;
 
 class InstFact
@@ -34,6 +35,8 @@ public:
 		{
 			decoder_[i] = &movF;
 		}
+		decoder_[0x8c] = &segF;
+		decoder_[0x8e] = &segF;
 
 		for(ubyte i = 0xb0; i < 0xbf; ++i)
 		{
