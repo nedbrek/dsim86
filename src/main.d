@@ -1,8 +1,30 @@
 import archstate;
 import cpu;
+import inst;
 import instfact;
 import std.file;
 import std.stdio;
+
+void step(in Cpu c, inout Inst86 i)
+{
+	if( i is null )
+	{
+		writefln(" Null execute");
+		return;
+	}
+
+	i.execute(c.getAA());
+
+	c.printNextIByte();
+
+	i = instFact(c.getAA());
+	if( i !is null )
+	{
+		char[] dstr;
+		i.disasm(c.getAA(), dstr);
+		writefln(" ", dstr);
+	}
+}
 
 /** x86 simulator
  *
@@ -48,23 +70,7 @@ void main(char[][] argv)
 			break;
 
 		case 's':
-			if( i is null )
-			{
-				writefln("Null decode");
-				return;
-			}
-
-			i.execute(c.getAA());
-
-			c.printNextIByte();
-
-			i = instFact(c.getAA());
-			if( i !is null )
-			{
-				i.disasm(c.getAA(), dstr);
-				writefln(" ", dstr);
-			}
-
+			step(c, i);
 			break;
 
 		default:
