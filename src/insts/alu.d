@@ -70,9 +70,49 @@ class AluOp : Inst86
 public:
 	void init(Prefixes *p, ubyte op, ArchState a)
 	{
+		bool use16 = true; //Ned check
+		if( p.wordOver )
+		{
+			use16 = false;
+		}
+		OpSz sz;
+
+		// rm, imm
+		if( 0x80 <= op && op <= 0x83 )
+		{
+			// determine reg size
+			if( op == 0x80 )
+				sz = OpSz.BYTE;
+			else if( p.rex.W )
+				sz = OpSz.QWORD;
+			else
+				sz = use16 ? OpSz.WORD : OpSz.DWORD;
+
+			// handle /r
+			ByteModRM mrm;
+			mrm.all = a.getNextIByte();
+
+			op_ = mrm.reg;
+
+			dst_  = decodeMRM(a, mrm, sz, OpMode.MD16);
+
+			// handle imm
+			if( op == 0x81 )
+				src_ = new ImmOp(getIword(a));
+			else
+			{
+				ulong imm = a.getNextIByte();
+				if( op == 0x83 )
+					imm = signEx(imm, OpSz.BYTE, OpSz.WORD);
+
+				src_ = new ImmOp(imm);
+			}
+
+			return;
+		}
+
 		op_ = cast(ubyte)((op >> 3) & 7);
 
-		OpSz sz;
 		// bit0 -> b(0) : v(1)
 		if( op & 1 )
 		{
@@ -83,12 +123,6 @@ public:
 			}
 			else
 			{
-				bool use16 = true;
-				if( p.wordOver )
-				{
-					use16 = false;
-				}
-
 				sz = use16 ? OpSz.WORD : OpSz.DWORD;
 			}
 		}
