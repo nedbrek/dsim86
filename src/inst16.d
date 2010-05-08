@@ -31,6 +31,10 @@ public:
 			decoder_[i] = &jmpI;
 		}
 
+		decoder_[0x80] = &aluFun;
+		decoder_[0x81] = &aluFun;
+		decoder_[0x83] = &aluFun;
+
 		for(ubyte i = 0x88; i < 0x8b; ++i)
 		{
 			decoder_[i] = &movF;
@@ -47,6 +51,7 @@ public:
 		decoder_[0xe5] = &ioFun;
 		decoder_[0xe6] = &ioFun;
 		decoder_[0xe7] = &ioFun;
+		//ea, eb (below)
 		decoder_[0xec] = &ioFun;
 		decoder_[0xed] = &ioFun;
 		decoder_[0xee] = &ioFun;
