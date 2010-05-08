@@ -42,7 +42,7 @@ public:
 		decoder_[0x8c] = &segF;
 		decoder_[0x8e] = &segF;
 
-		for(ubyte i = 0xb0; i < 0xbf; ++i)
+		for(ubyte i = 0xb0; i <= 0xbf; ++i)
 		{
 			decoder_[i] = &movF;
 		}
