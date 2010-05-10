@@ -2,8 +2,10 @@ import archstate;
 import cpu;
 import inst;
 import instfact;
+import std.conv;
 import std.file;
 import std.stdio;
+import std.string;
 
 void step(in Cpu c, inout Inst86 i)
 {
@@ -33,22 +35,22 @@ void main(char[][] argv)
 {
 	writefln("Begin");
 
-	Cpu c = new Cpu;
+	Cpu myCpu = new Cpu;
 	cpu.Parms p;
-	c.init(&p);
+	myCpu.init(&p);
 
 	void[] img = read("c:/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
-	c.loadImage(cast(ubyte[])img, 0xe_0000);
+	myCpu.loadImage(cast(ubyte[])img, 0xe_0000);
 
 	writefln("Start execute");
 	char[] dstr;
 
-	c.printNextIByte();
+	myCpu.printNextIByte();
 
-	auto i = instFact(c.getAA());
-	if( i !is null )
+	auto op = instFact(myCpu.getAA());
+	if( op !is null )
 	{
-		i.disasm(c.getAA(), dstr);
+		op.disasm(myCpu.getAA(), dstr);
 		writefln(" ", dstr);
 	}
 
@@ -56,6 +58,7 @@ void main(char[][] argv)
 
 	while( 1 )
 	{
+		writef("-");
 		char[] buf = readln();
 		if( buf[0] != '\n' )
 			cmd = buf[0];
@@ -65,12 +68,26 @@ void main(char[][] argv)
 		case 'q': return;
 
 		case 'r':
-			c.printRegs(dstr);
+			myCpu.printRegs(dstr);
 			writefln("\n", dstr, "\n");
 			break;
 
 		case 's':
-			step(c, i);
+			int ct = 1;
+
+			char[][] words = std.string.split(buf);
+			if( words.length == 2 )
+			{
+				ct = std.conv.toInt(words[1]);
+			}
+			else if( words.length > 2 )
+			{
+				writefln("Usage: step [ct]");
+			}
+
+			for(int i = 0; i < ct; ++i)
+				step(myCpu, op);
+
 			break;
 
 		default:
