@@ -23,7 +23,10 @@ run: ned86.exe
 	@./ned86.exe
 
 test: ned86.exe
-	@./ned86.exe < $(SRCDIR)/in.cmd
+	@./ned86.exe < $(SRCDIR)/in.cmd > $(SRCDIR)/test.out
+	@cat $(SRCDIR)/eol.txt >> $(SRCDIR)/test.out
+	@echo diff test.gold test.out
+	@diff $(SRCDIR)/test.gold $(SRCDIR)/test.out
 
 %.o : %.d
 	@gdc -c $(CFLAGS) $<
