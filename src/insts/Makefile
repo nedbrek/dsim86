@@ -7,13 +7,13 @@ VPATH = $(SRCDIR)
 #--- End boilerplate
 
 #--- Normal make stuff here!
-.PHONY: all
+.PHONY: insts
 
 CFLAGS := -I$(SRCDIR)/.. -I$(SRCDIR) -Wall -g
 LFLAGS := -g
 OBJS := alu.o flagop.o io.o jump.o mov.o segop.o
 
-all: $(OBJS)
+insts: $(OBJS)
 
 -include Depend.Make
 
