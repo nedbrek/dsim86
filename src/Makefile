@@ -7,7 +7,7 @@ VPATH = $(SRCDIR)
 #--- End boilerplate
 
 #--- Normal make stuff here!
-.PHONY: all run
+.PHONY: all run test
 
 CFLAGS := -I$(SRCDIR) -Wall -g
 LFLAGS := -g
@@ -20,6 +20,9 @@ all: ned86.exe
 -include Depend.Make
 
 run: ned86.exe
+	@./ned86.exe
+
+test: ned86.exe
 	@./ned86.exe < $(SRCDIR)/in.cmd
 
 %.o : %.d
