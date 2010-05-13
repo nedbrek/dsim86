@@ -42,6 +42,13 @@ public:
 
 	void execute(ArchState a)
 	{
+		if( isOut_ ) return;
+		switch( opSz_ )
+		{
+		case OpSz.BYTE: *(a.getByteReg (0)) = 0; break;
+		case OpSz.WORD: *(a.getWordReg (0)) = 0; break;
+		default:        *(a.getQWordReg(0)) = 0; break;
+		}
 	}
 
 	void disasm(ArchState a, out char[] str)
