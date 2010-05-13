@@ -7,7 +7,9 @@ import insts.flagop;
 import insts.io;
 import insts.jump;
 import insts.mov;
+import insts.prefix;
 import insts.segop;
+import insts.strop;
 import std.stdio;
 
 class InstFact
@@ -25,6 +27,22 @@ public:
 			if( (i & 6) != 6 )
 				decoder_[i] = &aluFun;
 		}
+		// 6,7 0..4f
+
+		// 0x50..0x65
+
+		decoder_[0x66] = &prefixF;
+		decoder_[0x67] = &prefixF;
+
+		//0x68
+		//0x69
+		//0x6a
+		//0x6b
+
+		decoder_[0x6c] = &strF;
+		decoder_[0x6d] = &strF;
+		decoder_[0x6e] = &strF;
+		decoder_[0x6f] = &strF;
 
 		for(ubyte i = 0x70; i < 0x7f; ++i)
 		{
@@ -33,19 +51,37 @@ public:
 
 		decoder_[0x80] = &aluFun;
 		decoder_[0x81] = &aluFun;
+		//0x82 rsvd
 		decoder_[0x83] = &aluFun;
+
+		// 0x84..0x87
 
 		for(ubyte i = 0x88; i < 0x8b; ++i)
 		{
 			decoder_[i] = &movF;
 		}
+
+		// 0x8b
+
 		decoder_[0x8c] = &segF;
 		decoder_[0x8e] = &segF;
+
+		// 0x8f..0xa3
+
+		for(ubyte i = 0xa4; i <= 0xaf; ++i)
+		{
+			if( i != 0xa8 && i != 0xa9 )
+				decoder_[i] = &strF;
+		}
+
+		// 0xa8,a9
 
 		for(ubyte i = 0xb0; i <= 0xbf; ++i)
 		{
 			decoder_[i] = &movF;
 		}
+
+		// 0xe0..e3
 
 		decoder_[0xe4] = &ioFun;
 		decoder_[0xe5] = &ioFun;
@@ -60,6 +96,12 @@ public:
 		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
 
+		decoder_[0xf0] = &prefixF;
+		// 0xf1
+		decoder_[0xf2] = &prefixF;
+		decoder_[0xf3] = &prefixF;
+		// 0xf4
+
 		decoder_[0xf5] = &flagF;
 		decoder_[0xf8] = &flagF;
 		decoder_[0xf9] = &flagF;
@@ -67,6 +109,9 @@ public:
 		decoder_[0xfb] = &flagF;
 		decoder_[0xfc] = &flagF;
 		decoder_[0xfd] = &flagF;
+
+		// 0xf6..f7
+		// 0xfe,ff
 	}
 
 	Inst86 makeInst(ArchState a)
