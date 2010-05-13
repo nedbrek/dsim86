@@ -7,7 +7,7 @@ import std.file;
 import std.stdio;
 import std.string;
 
-void step(in Cpu c, inout Inst86 i)
+void step(in Cpu c, inout Inst86 i, bool print)
 {
 	if( i is null )
 	{
@@ -17,10 +17,11 @@ void step(in Cpu c, inout Inst86 i)
 
 	i.execute(c.getAA());
 
-	c.printNextIByte();
+	if( print )
+		c.printNextIByte();
 
 	i = instFact(c.getAA());
-	if( i !is null )
+	if( print && i !is null )
 	{
 		char[] dstr;
 		i.disasm(c.getAA(), dstr);
@@ -65,6 +66,22 @@ void main(char[][] argv)
 
 		switch( cmd )
 		{
+		case 'n':
+			ulong curIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
+			do
+			{
+				step(myCpu, op, false);
+			} while( *myCpu.getAA().getOtherReg(RegSet.IP, 0) == curIp );
+
+			myCpu.printRestartIByte();
+			if( op !is null )
+			{
+				op.disasm(myCpu.getAA(), dstr);
+				writefln(" ", dstr);
+			}
+
+			break;
+
 		case 'q': return;
 
 		case 'r':
@@ -86,7 +103,7 @@ void main(char[][] argv)
 			}
 
 			for(int i = 0; i < ct; ++i)
-				step(myCpu, op);
+				step(myCpu, op, true);
 
 			break;
 
