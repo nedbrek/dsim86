@@ -13,7 +13,7 @@ CFLAGS := -I$(SRCDIR) -Wall -g
 LFLAGS := -g
 OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o operand.o \
    insts/alu.o insts/flagop.o insts/io.o insts/jump.o insts/mov.o \
-   insts/segop.o
+   insts/prefix.o insts/segop.o insts/strop.o
 
 all: ned86.exe
 
