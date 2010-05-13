@@ -11,7 +11,7 @@ endif
 OBJDIR := ../../_$(_ARCH)/insts
 
 # retrieve the make command line (e.g. make run)
-MAKETARGET = $(MAKE) -C $@ -f $(CURDIR)/Makefile \
+MAKETARGET = $(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile \
     SRCDIR=$(CURDIR) $(MAKECMDGOALS)
 
 # get us over to the object directory
