@@ -59,6 +59,16 @@ public:
 
 	void execute(ArchState a)
 	{
+		if( rep_ )
+		{
+			ushort *cx = a.getWordReg(RegNames.CX);
+			--(*cx);
+			if( *cx != 0 )
+			{
+				*a.getOtherReg(RegSet.IP, 0) =
+				   *a.getOtherReg(RegSet.RESTART_IP, 0);
+			}
+		}
 	}
 
 	void disasm(ArchState a, out char[] str)
