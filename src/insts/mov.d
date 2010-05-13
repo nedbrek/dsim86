@@ -73,6 +73,7 @@ public:
 
 	void execute(ArchState a)
 	{
+		dst_.write(a, src_.read(a));
 	}
 
 	void disasm(ArchState a, out char[] str)
