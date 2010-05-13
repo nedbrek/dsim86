@@ -28,18 +28,19 @@ protected: // data
 	//Ned cpuid
 
 	ulong ip_ = 0xfff0; // power on value
+	ulong restartIp_;
 
 	ubyte[] mem_;
 
 protected: // methods
-	ulong formIP_EA()
+	ulong formIP_EA(ulong ip)
 	{
 		auto seg = segs_[SegReg.Name.CS];
 
 		ulong ret = seg.base_;
 
 		ret += seg.val_ << 4;
-		ret += ip_;
+		ret += ip;
 
 		return ret;
 	}
@@ -82,6 +83,7 @@ protected: // types
 			{
 			case RegSet.FLAGS: return &flags_;
 			case RegSet.IP   : return &ip_;
+			case RegSet.RESTART_IP: return &restartIp_;
 
 			case RegSet.CR   : return & cr_[idx];
 			case RegSet.DR   : return & dr_[idx];
@@ -109,7 +111,7 @@ protected: // types
 		/// do not
 		ubyte peekNextIByte()
 		{
-			return mem_[cast(uint)formIP_EA()];
+			return mem_[cast(uint)formIP_EA(ip_)];
 		}
 	}
 
@@ -147,10 +149,16 @@ public:
 		ip_ = ip;
 	}
 
+	void printRestartIByte()
+	{
+		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", restartIp_, ':',
+		    "%x", mem_[cast(uint)formIP_EA(restartIp_)]);
+	}
+
 	void printNextIByte()
 	{
 		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
-		    "%x", mem_[cast(uint)formIP_EA()]);
+		    "%x", mem_[cast(uint)formIP_EA(ip_)]);
 	}
 
 	void printRegs(out char[] ostr)

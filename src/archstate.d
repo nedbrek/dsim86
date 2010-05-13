@@ -57,7 +57,8 @@ enum RegSet
 	CR,
 	DR,
 	MSR,
-	CPUID
+	CPUID,
+	RESTART_IP
 }
 
 /**
