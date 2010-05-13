@@ -84,6 +84,26 @@ public:
 
 	void write(ArchState a, ulong v)
 	{
+		if( set_ != RegSet.GP )
+		{
+			if( set_ == RegSet.SEG )
+				a.getSegReg(cast(SegReg.Name)(reg_)).val_ = cast(ushort)(v);
+
+			*(a.getOtherReg(set_, reg_)) = v;
+		}
+		//GP
+
+		switch( sz_ )
+		{
+		case OpSz.BYTE:
+			*(a.getByteReg(reg_)) = cast(ubyte)(v);
+
+		case OpSz.WORD:
+			*(a.getWordReg(reg_)) = cast(ushort)(v);
+
+		default:
+			*(a.getQWordReg(reg_)) = v;
+		}
 	}
 
 	void disasm(inout char[] str)
