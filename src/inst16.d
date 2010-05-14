@@ -3,6 +3,7 @@ module inst16;
 import archstate;
 import inst;
 import insts.alu;
+import insts.call;
 import insts.flagop;
 import insts.io;
 import insts.jump;
@@ -87,11 +88,13 @@ public:
 		decoder_[0xe5] = &ioFun;
 		decoder_[0xe6] = &ioFun;
 		decoder_[0xe7] = &ioFun;
-		//ea, eb (below)
+		//e8,ea,eb (below)
 		decoder_[0xec] = &ioFun;
 		decoder_[0xed] = &ioFun;
 		decoder_[0xee] = &ioFun;
 		decoder_[0xef] = &ioFun;
+
+		decoder_[0xe8] = &callRelF;
 
 		decoder_[0xea] = &jmpF;
 		decoder_[0xeb] = &jmpI;
