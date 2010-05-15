@@ -183,6 +183,14 @@ struct Prefixes
 	bool   awordOver;
 }
 
+interface Operand
+{
+   ulong read (ArchState a);
+   void  write(ArchState a, ulong v);
+
+   void disasm(inout char[] str);
+}
+
 /// specify memory reference
 struct MemSpec
 {

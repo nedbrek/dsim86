@@ -3,14 +3,6 @@ module operand;
 import archstate;
 import std.string;
 
-interface Operand
-{
-   ulong read (ArchState a);
-   void  write(ArchState a, ulong v);
-
-	void disasm(inout char[] str);
-}
-
 class ImmOp : Operand
 {
 	ulong i_;
