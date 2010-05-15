@@ -94,10 +94,34 @@ protected: // types
 			return null;
 		}
 
-		ubyte * getByteMem (MemSpec* memspec) { return null; }
-		ushort* getWordMem (MemSpec* memspec) { return null; }
-		uint  * getDWordMem(MemSpec* memspec) { return null; }
-		ulong * getQWordMem(MemSpec* memspec) { return null; }
+		ubyte * getByteMem (MemSpec* mem)
+		{
+			ulong addr = 0;
+			if( mem.index )
+			{
+				addr = mem.index.read(this);
+				addr *= mem.scale;
+			}
+			addr += mem.imm;
+			if( mem.base )
+			{
+				addr += mem.base.read(this);
+			}
+
+			SegReg *seg = getSegReg(cast(SegReg.Name)(mem.seg));
+			addr += seg.val_ << 4;
+			
+			return &mem_[cast(uint)(addr)];
+		}
+
+		ushort* getWordMem (MemSpec* memspec)
+		{ return cast(ushort*)getByteMem(memspec); }
+
+		uint  * getDWordMem(MemSpec* memspec)
+		{ return cast(uint*)getByteMem(memspec); }
+
+		ulong * getQWordMem(MemSpec* memspec)
+		{ return cast(ulong*)getByteMem(memspec); }
 
 		/// advance IP
 		ubyte getNextIByte()
