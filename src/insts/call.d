@@ -2,6 +2,7 @@ module call;
 
 import archstate;
 import inst;
+import operand;
 import std.string;
 
 class CallRel : Inst86
@@ -27,7 +28,7 @@ public:
 	void execute(ArchState a)
 	{
 		ulong *ip = a.getOtherReg(RegSet.IP, 0);
-		//push ip
+		push(a, *ip);
 		*ip += off_;
 		*ip &= 0xffff;
 	}
