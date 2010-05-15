@@ -23,12 +23,13 @@ protected:
 public:
 	this()
 	{
-		for(ubyte i = 0; i < 0x4f; ++i)
+		for(ubyte i = 0; i < 0x3f; ++i)
 		{
 			if( (i & 6) != 6 )
 				decoder_[i] = &aluFun;
 		}
-		// 6,7 0..4f
+		// 6,7 0..3f
+		// 0x40..0x4f
 
 		// 0x50..0x65
 
