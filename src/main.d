@@ -40,7 +40,7 @@ void main(char[][] argv)
 	cpu.Parms p;
 	myCpu.init(&p);
 
-	void[] img = read("c:/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
+	void[] img = read("/c/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
 	myCpu.loadImage(cast(ubyte[])img, 0xe_0000);
 
 	writefln("Start execute");
