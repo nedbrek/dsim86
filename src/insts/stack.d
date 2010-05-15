@@ -32,7 +32,8 @@ public:
 	void execute(ArchState a)
 	{
 		ulong val = op_.read(a);
-		push(a, val);
+		if( !isPop_ )
+			push(a, val);
 	}
 
 	void disasm(ArchState a, out char[] str)
