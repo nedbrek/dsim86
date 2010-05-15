@@ -10,6 +10,7 @@ import insts.jump;
 import insts.mov;
 import insts.prefix;
 import insts.segop;
+import insts.stack;
 import insts.strop;
 import std.stdio;
 
@@ -31,7 +32,12 @@ public:
 		// 6,7 0..3f
 		// 0x40..0x4f
 
-		// 0x50..0x65
+		for(ubyte i = 0x50; i < 0x5f; ++i)
+		{
+			decoder_[i] = &stackF;
+		}
+
+		// 0x60..0x65
 
 		decoder_[0x66] = &prefixF;
 		decoder_[0x67] = &prefixF;
