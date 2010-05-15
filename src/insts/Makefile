@@ -11,7 +11,8 @@ VPATH = $(SRCDIR)
 
 CFLAGS := -I$(SRCDIR)/.. -I$(SRCDIR) -Wall -g
 LFLAGS := -g
-OBJS := alu.o call.o flagop.o io.o jump.o mov.o prefix.o segop.o strop.o
+OBJS := alu.o call.o flagop.o io.o jump.o mov.o prefix.o segop.o \
+   stack.o strop.o
 
 insts: $(OBJS)
 
