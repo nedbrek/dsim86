@@ -194,15 +194,13 @@ interface Operand
 /// specify memory reference
 struct MemSpec
 {
+	Operand   base;
+	Operand   index;
 	ulong     imm;
-	ByteModRM mrm;
-	Sib       sib;
-	ubyte     rex;
+	ubyte     scale = 1;
 
 	ubyte     seg = SegReg.Name.DS;
 	bool      lock;
-	bool      wordOver;
-	bool      awordOver;
 }
 
 interface ArchState
