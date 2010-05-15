@@ -260,3 +260,15 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 	return null;
 }
 
+void push(ArchState a, ulong val)
+{
+   ushort *sp = a.getWordReg(RegNames.SP);
+   *sp -= 2;
+
+   MemSpec mem;
+   mem.seg = SegReg.Name.SS;
+   mem.base = new RegOp(RegSet.GP, RegNames.SP, OpSz.WORD);
+
+   *a.getWordMem(&mem) = cast(ushort)(val);
+}
+
