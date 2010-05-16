@@ -242,7 +242,7 @@ ulong signEx(ulong v, OpSz startSz, OpSz endSz)
 	{
 	case OpSz.BYTE:
 		signBitSet = (v & 128) != 0;
-		mask &= ~255;
+		mask &= ~0xff;
 		break;
 
 	default:
@@ -252,12 +252,14 @@ ulong signEx(ulong v, OpSz startSz, OpSz endSz)
 	{
 		switch( endSz )
 		{
-		case OpSz.QWORD:
-			ret |= mask;
+		case OpSz.WORD:
+			mask &= 0xffff;
 			break;
 
+		case OpSz.QWORD:
 		default:
 		}
+		ret |= mask;
 	}
 
 	return ret;
