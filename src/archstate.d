@@ -287,3 +287,22 @@ bool checkCond(CC cond, ArchState a)
 	return false;
 }
 
+ulong formEA(ArchState a, in MemSpec *mem)
+{
+	ulong addr = 0;
+	if( mem.index )
+	{
+		addr = mem.index.read(a);
+		addr *= mem.scale;
+	}
+
+	addr += mem.imm;
+
+	if( mem.base )
+	{
+		addr += mem.base.read(a);
+	}
+
+	return addr;
+}
+

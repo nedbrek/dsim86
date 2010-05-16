@@ -96,20 +96,11 @@ protected: // types
 
 		ubyte * getByteMem (MemSpec* mem)
 		{
-			ulong addr = 0;
-			if( mem.index )
-			{
-				addr = mem.index.read(this);
-				addr *= mem.scale;
-			}
-			addr += mem.imm;
-			if( mem.base )
-			{
-				addr += mem.base.read(this);
-			}
+			ulong addr = formEA(this, mem);
 
 			SegReg *seg = getSegReg(cast(SegReg.Name)(mem.seg));
 			addr += seg.val_ << 4;
+			addr &= 0xffff;
 			
 			return &mem_[cast(uint)(addr)];
 		}
