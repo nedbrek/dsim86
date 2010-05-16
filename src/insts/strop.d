@@ -2,6 +2,64 @@ module strop;
 
 import archstate;
 import inst;
+import operand;
+
+private:
+alias void function(ArchState a, OpSz sz) StrFun;
+
+void ins(ArchState a, OpSz sz)
+{
+}
+
+void outs(ArchState a, OpSz sz)
+{
+}
+
+void movs(ArchState a, OpSz sz)
+{
+}
+
+void cmps(ArchState a, OpSz sz)
+{
+}
+
+void stos(ArchState a, OpSz sz)
+{
+	ushort *di = a.getWordReg(RegNames.DI);
+
+	MemSpec mem;
+	mem.seg = SegReg.Name.ES;
+	mem.base = new RegOp(RegSet.GP, RegNames.DI, OpSz.WORD);
+
+	switch( sz )
+	{
+	case OpSz.BYTE:
+		// store AL to ES:DI
+		*a.getByteMem(&mem) = *a.getByteReg(RegBytes.AL);
+
+		// incr DI
+		(*di)++;
+		break;
+
+	case OpSz.WORD:
+		// store AX to ES:DI
+		*a.getWordMem(&mem) = *a.getWordReg(RegNames.AX);
+
+		// incr DI
+		(*di) += 2;
+		break;
+
+	default:
+	}
+}
+
+void lods(ArchState a, OpSz sz)
+{
+}
+
+void scas(ArchState a, OpSz sz)
+{
+}
 
 class StrOp : Inst86
 {
@@ -13,6 +71,9 @@ class StrOp : Inst86
 		"INS ", "OUTS", // io
 		"MOVS", "CMPS", // mem to mem
 		"STOS", "LODS", "SCAS" // reg to mem
+	];
+	static StrFun fun[7] = [
+		&ins, &outs, &movs, &cmps, &stos, &lods, &scas
 	];
 
 	Op   o_;
@@ -59,6 +120,8 @@ public:
 
 	void execute(ArchState a)
 	{
+		fun[o_](a, sz_);
+
 		if( rep_ )
 		{
 			ushort *cx = a.getWordReg(RegNames.CX);
@@ -83,6 +146,7 @@ public:
 	}
 }
 
+public:
 Inst86 strF(Prefixes *p, ubyte op, ArchState a)
 {
 	auto ret = new StrOp;
