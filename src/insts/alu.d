@@ -11,7 +11,9 @@ alias ulong function(ArchState a, Operand dst, Operand src)
 
 ulong add(ArchState a, Operand dst, Operand src)
 {
-	return 0;
+	ulong ret = dst.read(a) + src.read(a);
+	dst.write(a, ret);
+	return ret;
 }
 
 ulong adc(ArchState a, Operand dst, Operand src)
