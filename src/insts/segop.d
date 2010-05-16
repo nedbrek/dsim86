@@ -8,9 +8,9 @@ import std.string;
 class MovSeg : Inst86
 {
 protected:
-	Operand val_;
-	ubyte   seg_;
-	bool    isLoad_;
+	Operand     val_;
+	SegReg.Name seg_;
+	bool        isLoad_;
 
 public:
 	void init(Prefixes *p, ubyte op, ArchState a)
@@ -20,7 +20,7 @@ public:
 		ByteModRM mrm;
 		mrm.all = a.getNextIByte();
 
-		seg_ = mrm.reg;
+		seg_ = cast(SegReg.Name)(mrm.reg);
 		val_ = decodeMRM(a, mrm, OpSz.WORD, OpMode.MD16);
 	}
 
@@ -35,6 +35,11 @@ public:
 
 	void execute(ArchState a)
 	{
+		SegReg *seg = a.getSegReg(seg_);
+		if( isLoad_ )
+			seg.val_ = cast(ushort)(val_.read(a));
+		else
+			val_.write(a, seg.val_);
 	}
 
 	void disasm(ArchState a, out char[] str)
