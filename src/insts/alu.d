@@ -201,9 +201,60 @@ public:
 	}
 }
 
-public Inst86 aluFun(Prefixes *p, ubyte op, ArchState a)
+class LeaOp : Inst86
 {
-	AluOp ret = new AluOp;
+	Operand dst_;
+	MemOp   src_;
+
+public:
+	void init(Prefixes *p, ubyte op, ArchState a)
+	{
+		OpSz dsz = OpSz.WORD;
+		OpSz asz = OpSz.WORD;
+
+		ByteModRM mrm;
+		mrm.all = a.getNextIByte();
+
+		dst_ = new RegOp(RegSet.GP, mrm.reg, dsz);
+		src_ = cast(MemOp)(decodeMRM(a, mrm, asz, OpMode.MD16));
+	}
+
+	MemType getMemType() { return MemType.NONE; }
+	MemSpec getMemRef()  { MemSpec ret; return ret; }
+
+	uint numDst() { return 1; }
+	uint numSrc() { return 2; }
+
+	ubyte getSrc(uint idx) { return 0; }
+	ubyte getDst(uint idx) { return 0; }
+
+	void execute(ArchState a)
+	{
+		if( src_ )
+			dst_.write(a, src_.getEA(a));
+	}
+
+	void disasm(ArchState a, out char[] str)
+	{
+	   str ~= "lea ";
+	   dst_.disasm(str);
+	   str ~= ", ";
+	   src_.disasm(str);
+	}
+}
+
+public:
+Inst86 aluFun(Prefixes *p, ubyte op, ArchState a)
+{
+	auto ret = new AluOp;
+	ret.init(p, op, a);
+
+	return ret;
+}
+
+Inst86 leaF(Prefixes *p, ubyte op, ArchState a)
+{
+	auto ret = new LeaOp;
 	ret.init(p, op, a);
 
 	return ret;
