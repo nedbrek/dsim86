@@ -74,6 +74,8 @@ public:
 		decoder_[0x8c] = &segF;
 		decoder_[0x8e] = &segF;
 
+		decoder_[0x8d] = &leaF;
+
 		// 0x8f..0xa3
 
 		for(ubyte i = 0xa4; i <= 0xaf; ++i)
