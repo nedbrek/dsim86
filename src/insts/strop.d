@@ -26,9 +26,9 @@ public:
 		rep_ = p.repe || p.repne;
 
 		if( op & 1 )
-			sz_ = OpSz.BYTE;
-		else
 			sz_ = OpSz.WORD;
+		else
+			sz_ = OpSz.BYTE;
 
 		switch( op )
 		{
