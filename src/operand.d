@@ -89,9 +89,11 @@ public:
 		{
 		case OpSz.BYTE:
 			*(a.getByteReg(reg_)) = cast(ubyte)(v);
+			break;
 
 		case OpSz.WORD:
 			*(a.getWordReg(reg_)) = cast(ushort)(v);
+			break;
 
 		default:
 			*(a.getQWordReg(reg_)) = v;
