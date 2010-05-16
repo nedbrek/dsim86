@@ -124,20 +124,19 @@ public:
 
 class MemOp : Operand
 {
+	MemSpec mem_;
 	OpSz  sz_;
-	RegOp base_;
-	RegOp index_;
-	ubyte scale_;
-	ulong imm_;
 
 public:
-	this(OpSz sz, RegOp base, ulong imm = 0, RegOp idx = null, ubyte scale = 1)
+	this(OpSz sz, MemSpec mem)
 	{
-		sz_    = sz;
-		base_  = base;
-		index_ = idx;
-		scale_ = scale;
-		imm_   = imm;
+		mem_ = mem;
+		sz_  = sz;
+	}
+
+	ulong getEA(ArchState a)
+	{
+		return formEA(a, &mem_);
 	}
 
 	ulong read(ArchState a)
@@ -171,26 +170,26 @@ public:
 		str ~= "[";
 
 		bool hadReg = false;
-		if( base_ )
+		if( mem_.base )
 		{
-			base_.disasm(str);
+			mem_.base.disasm(str);
 			hadReg = true;
 		}
-		if( index_ )
+		if( mem_.index )
 		{
 			if( hadReg )
 				str ~= "+";
 
-			index_.disasm(str);
+			mem_.index.disasm(str);
 			hadReg = true;
 		}
 
-		if( imm_ != 0 )
+		if( mem_.imm != 0 )
 		{
 			if( hadReg )
 				str ~= "+";
 
-			str ~= std.string.format("%04x]", imm_);
+			str ~= std.string.format("%04x]", mem_.imm);
 		}
 		else
 			str ~= "]";
@@ -204,39 +203,37 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 		if( mrm.mod == 3 )
 			return new RegOp(RegSet.GP, mrm.rm, sz);
 
-		RegOp base;
-		RegOp index;
-		ulong imm;
+		MemSpec mem;
 
 		switch( mrm.rm )
 		{
 		case 0:
 		case 1:
-			base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+6), OpSz.WORD);
-			index = new RegOp(RegSet.GP, 3,        OpSz.WORD);
+			mem.base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+6), OpSz.WORD);
+			mem.index = new RegOp(RegSet.GP, 3,        OpSz.WORD);
 			break;
 
 		case 2:
 		case 3:
-			base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+4), OpSz.WORD);
-			index = new RegOp(RegSet.GP, 5,        OpSz.WORD);
+			mem.base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+4), OpSz.WORD);
+			mem.index = new RegOp(RegSet.GP, 5,        OpSz.WORD);
 			break;
 
 		case 4:
 		case 5:
-			base = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+2), OpSz.WORD);
+			mem.base = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+2), OpSz.WORD);
 			break;
 
 		case 6:
 			// BP needs offset or it is imm only
 			if( mrm.mod == 0 )
-				imm = getIword(a);
+				mem.imm = getIword(a);
 			else
-				base = new RegOp(RegSet.GP, 5, OpSz.WORD);
+				mem.base = new RegOp(RegSet.GP, 5, OpSz.WORD);
 			break;
 
 		case 7:
-			base = new RegOp(RegSet.GP, 3, OpSz.WORD);
+			mem.base = new RegOp(RegSet.GP, 3, OpSz.WORD);
 			break;
 
 		default:
@@ -246,18 +243,18 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 		switch( mrm.mod )
 		{
 		case 1: // byte off
-			imm = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.WORD);
+			mem.imm = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.WORD);
 			break;
 
 		case 2: // word off
-			imm = getIword(a);
+			mem.imm = getIword(a);
 			break;
 
 		case 0: // no imm
 		case 3: // reg, above
 		default:
 		}
-		return new MemOp(sz, base, imm, index);
+		return new MemOp(sz, mem);
 	}
 	return null;
 }
