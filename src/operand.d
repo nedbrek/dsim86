@@ -271,3 +271,17 @@ void push(ArchState a, ulong val)
    *a.getWordMem(&mem) = cast(ushort)(val);
 }
 
+ulong pop(ArchState a, OpSz sz)
+{
+   ushort *sp = a.getWordReg(RegNames.SP);
+   MemSpec mem;
+   mem.seg = SegReg.Name.SS;
+   mem.base = new RegOp(RegSet.GP, RegNames.SP, OpSz.WORD);
+
+   ulong ret = *a.getWordMem(&mem);
+
+   *sp += 2;
+
+	return ret;
+}
+
