@@ -7,7 +7,7 @@ VPATH = $(SRCDIR)
 #--- End boilerplate
 
 #--- Normal make stuff here!
-.PHONY: all run test
+.PHONY: all run test view
 
 CFLAGS := -I$(SRCDIR) -Wall -g
 LFLAGS := -g
@@ -21,6 +21,9 @@ all: ned86.exe
 
 run: ned86.exe
 	@./ned86.exe
+
+view: test
+	@tail -n10 $(SRCDIR)/test.out
 
 test: ned86.exe
 	@./ned86.exe < $(SRCDIR)/in.cmd > $(SRCDIR)/test.out
