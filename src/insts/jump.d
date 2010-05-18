@@ -27,6 +27,10 @@ public:
 		{
 			off_ = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
 		}
+		else if( op == 0xe9 )
+		{
+			off_ = getIword(a);
+		}
 	}
 
 	MemType getMemType() { return MemType.NONE; }
