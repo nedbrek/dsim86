@@ -141,28 +141,35 @@ public:
 
 	ulong read(ArchState a)
 	{
-		ulong ret = 0;
 		switch( sz_ )
 		{
-		case OpSz.BYTE:
-			break;
+		case OpSz.BYTE : return *a.getByteMem(&mem_);
 
-		case OpSz.WORD:
-			break;
+		case OpSz.WORD : return *a.getWordMem(&mem_);
 
-		case OpSz.DWORD:
-			break;
+		case OpSz.DWORD: return *a.getDWordMem(&mem_);
 
-		case OpSz.QWORD:
-			break;
+		case OpSz.QWORD: return *a.getQWordMem(&mem_);
 
 		default:
 		}
-		return ret;
+		return 0;
 	}
 
 	void write(ArchState a, ulong v)
 	{
+		switch( sz_ )
+		{
+		case OpSz.BYTE : *a.getByteMem(&mem_) = cast(ubyte)(v);
+
+		case OpSz.WORD : *a.getWordMem(&mem_) = cast(ushort)(v);
+
+		case OpSz.DWORD: *a.getDWordMem(&mem_) = cast(uint)(v);
+
+		case OpSz.QWORD: *a.getQWordMem(&mem_) = v;
+
+		default:
+		}
 	}
 
 	void disasm(inout char[] str)
