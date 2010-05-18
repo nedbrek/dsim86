@@ -91,6 +91,12 @@ public:
 			decoder_[i] = &movF;
 		}
 
+		// 0xc0..c2
+
+		decoder_[0xc3] = &retOpF;
+
+		// 0xc4..df
+
 		// 0xe0..e3
 
 		decoder_[0xe4] = &ioFun;
