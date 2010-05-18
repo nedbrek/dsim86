@@ -31,9 +31,10 @@ public:
 
 	void execute(ArchState a)
 	{
-		ulong val = op_.read(a);
-		if( !isPop_ )
-			push(a, val);
+		if( isPop_ )
+			op_.write(a, pop(a, OpSz.WORD));
+		else
+			push(a, op_.read(a));
 	}
 
 	void disasm(ArchState a, out char[] str)
