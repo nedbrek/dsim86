@@ -20,6 +20,12 @@ public:
 		}
 	}
 
+	void initFF(in Prefixes *p, ByteModRM mrm, ArchState a)
+	{
+		op_ = decodeMRM(a, mrm, OpSz.WORD, OpMode.MD16);
+		isPop_ = false;
+	}
+
 	MemType getMemType() { return MemType.NONE; }
 	MemSpec getMemRef () { MemSpec ret; return ret; }
 
