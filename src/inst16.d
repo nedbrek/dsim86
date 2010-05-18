@@ -21,6 +21,36 @@ protected:
 
 	InstFun[ubyte] decoder_;
 
+protected: // methods
+	static
+	Inst86 ffOp(Prefixes *p, ubyte op, ArchState a)
+	{
+		ByteModRM mrm;
+		mrm.all = a.getNextIByte();
+
+		switch( mrm.reg )
+		{
+		case 0:
+		case 1: return null; //Ned, inc/dec
+
+		case 2: return null; //Ned, call rmv
+
+		case 3: return null; //Ned, callf mfp
+
+		case 4: return null; //Ned jmp rmv
+
+		case 5: return null; //Ned jmpf mfp
+
+		case 6:
+			auto pushFF = new StackOp;
+			pushFF.initFF(p, mrm, a);
+			return pushFF;
+
+		case 7: // pop rmv -> mem to mem -> illegal
+		default: return null;
+		}
+	}
+
 public:
 	this()
 	{
@@ -131,7 +161,9 @@ public:
 		decoder_[0xfd] = &flagF;
 
 		// 0xf6..f7
-		// 0xfe,ff
+
+		decoder_[0xfe] = &ffOp;
+		decoder_[0xff] = &ffOp;
 	}
 
 	Inst86 makeInst(ArchState a)
