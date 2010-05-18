@@ -40,9 +40,45 @@ public:
 	}
 }
 
+class RetOp : Inst86
+{
+public:
+	void init(in Prefixes *p, ubyte op, ArchState a)
+	{
+	}
+
+	MemType getMemType() { return MemType.NONE; }
+	MemSpec getMemRef () { MemSpec ret; return ret; }
+
+	uint    numDst() { return 0; }
+	uint    numSrc() { return 0; }
+
+	ubyte getSrc(uint idx) { return 0; }
+	ubyte getDst(uint idx) { return 0; }
+
+	void execute(ArchState a)
+	{
+		ulong *ip = a.getOtherReg(RegSet.IP, 0);
+		*ip = pop(a, OpSz.WORD);
+	}
+
+	void disasm(ArchState a, out char[] str)
+	{
+		str ~= "ret";
+	}
+}
+
 Inst86 callRelF(Prefixes *p, ubyte op, ArchState a)
 {
 	auto ret = new CallRel;
+	ret.init(p, op, a);
+
+	return ret;
+}
+
+Inst86 retOpF(Prefixes *p, ubyte op, ArchState a)
+{
+	auto ret = new RetOp;
 	ret.init(p, op, a);
 
 	return ret;
