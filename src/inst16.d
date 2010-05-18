@@ -103,7 +103,7 @@ public:
 		decoder_[0xe5] = &ioFun;
 		decoder_[0xe6] = &ioFun;
 		decoder_[0xe7] = &ioFun;
-		//e8,ea,eb (below)
+		//e8,e9,ea,eb (below)
 		decoder_[0xec] = &ioFun;
 		decoder_[0xed] = &ioFun;
 		decoder_[0xee] = &ioFun;
@@ -111,8 +111,10 @@ public:
 
 		decoder_[0xe8] = &callRelF;
 
-		decoder_[0xea] = &jmpF;
+		decoder_[0xe9] = &jmpI;
 		decoder_[0xeb] = &jmpI;
+
+		decoder_[0xea] = &jmpF;
 
 		decoder_[0xf0] = &prefixF;
 		// 0xf1
