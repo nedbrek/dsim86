@@ -55,20 +55,25 @@ ulong cmp(ArchState a, Operand dst, Operand src)
 	return tmp;
 }
 
+ulong test(ArchState a, Operand dst, Operand src)
+{
+	return 0;
+}
+
 class AluOp : Inst86
 {
 	Operand dst_;
 	Operand src_;
 	ubyte    op_;
 
-	static AluFun[8] funcs = [
+	static AluFun[9] funcs = [
 		&add, &or,  &adc, &sbb,
-		&and, &sub, &xor, &cmp
+		&and, &sub, &xor, &cmp, &test
 	];
 
-	static char[3] names[8] = [
+	static char[3] names[9] = [
 		"add", "or ", "adc", "sbb",
-		"and", "sub", "xor", "cmp"
+		"and", "sub", "xor", "cmp", "tst"
 	];
 
 public:
@@ -80,6 +85,62 @@ public:
 			use16 = false;
 		}
 		OpSz sz;
+
+		// test
+		if( op == 0xa8 || op == 0xa9 )
+		{
+			// test a, i
+			op_ = 8;
+			sz = op & 1 ? OpSz.WORD : OpSz.BYTE;
+
+			dst_ = new RegOp(RegSet.GP, 0, sz);
+
+			if( sz == OpSz.BYTE )
+			{
+				src_ = new ImmOp(a.getNextIByte());
+			}
+			else
+			{
+				src_ = new ImmOp(getIword(a));
+			}
+
+			return;
+		}
+		else if( op == 0x84 || op == 0x85 )
+		{
+			// test rm, r
+			op_ = 8;
+			sz = op & 1 ? OpSz.WORD : OpSz.BYTE;
+
+			ByteModRM mrm;
+			mrm.all = a.getNextIByte();
+			dst_  = decodeMRM(a, mrm, sz, OpMode.MD16);
+
+			src_ = new RegOp(RegSet.GP, mrm.reg, sz);
+
+			return;
+		}
+		else if( op == 0xf6 || op == 0xf7 )
+		{
+			// test rm, i
+			op_ = 8;
+			sz = op & 1 ? OpSz.WORD : OpSz.BYTE;
+
+			ByteModRM mrm;
+			mrm.all = a.getNextIByte();
+			dst_  = decodeMRM(a, mrm, sz, OpMode.MD16);
+
+			if( sz == OpSz.BYTE )
+			{
+				src_ = new ImmOp(a.getNextIByte());
+			}
+			else
+			{
+				src_ = new ImmOp(getIword(a));
+			}
+
+			return;
+		}
 
 		// rm, imm
 		if( 0x80 <= op && op <= 0x83 )
