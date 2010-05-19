@@ -80,8 +80,8 @@ public:
 		{
 			if( set_ == RegSet.SEG )
 				a.getSegReg(cast(SegReg.Name)(reg_)).val_ = cast(ushort)(v);
-
-			*(a.getOtherReg(set_, reg_)) = v;
+			else
+				*(a.getOtherReg(set_, reg_)) = v;
 		}
 		//GP
 
