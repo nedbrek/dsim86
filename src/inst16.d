@@ -96,12 +96,10 @@ public:
 
 		// 0x84..0x87
 
-		for(ubyte i = 0x88; i < 0x8b; ++i)
+		for(ubyte i = 0x88; i <= 0x8b; ++i)
 		{
 			decoder_[i] = &movF;
 		}
-
-		// 0x8b
 
 		decoder_[0x8c] = &segF;
 		decoder_[0x8e] = &segF;
