@@ -13,8 +13,15 @@ protected:
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
-		if( 0x50 <= op && op <= 0x5f )
+		if( 0x06 <= op && op <= 0x1f )
 		{
+			// push/pop seg
+			op_ = new RegOp(RegSet.SEG, cast(ubyte)((op >> 3) & 3), OpSz.WORD);
+			isPop_ = (op & 1) != 0;
+		}
+		else if( 0x50 <= op && op <= 0x5f )
+		{
+			// push/pop +r
 			op_ = new RegOp(RegSet.GP, cast(ubyte)(op & 7), OpSz.WORD);
 			isPop_ = (op & 8) != 0;
 		}
