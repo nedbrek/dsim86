@@ -58,6 +58,8 @@ public:
 		{
 			if( (i & 6) != 6 )
 				decoder_[i] = &aluFun;
+			else if( i < 0x20 )
+				decoder_[i] = &stackF;
 		}
 		// 6,7 0..3f
 		// 0x40..0x4f
