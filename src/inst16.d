@@ -94,7 +94,11 @@ public:
 		//0x82 rsvd
 		decoder_[0x83] = &aluFun;
 
-		// 0x84..0x87
+		// test rm, r
+		decoder_[0x84] = &aluFun;
+		decoder_[0x85] = &aluFun;
+
+		// 0x86..0x87
 
 		for(ubyte i = 0x88; i <= 0x8b; ++i)
 		{
@@ -114,7 +118,8 @@ public:
 				decoder_[i] = &strF;
 		}
 
-		// 0xa8,a9
+		decoder_[0xa8] = &aluFun;
+		decoder_[0xa9] = &aluFun;
 
 		for(ubyte i = 0xb0; i <= 0xbf; ++i)
 		{
