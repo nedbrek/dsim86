@@ -102,6 +102,12 @@ public:
 
 	void disasm(inout char[] str)
 	{
+		if( set_ == RegSet.SEG )
+		{
+			str ~= std.string.format("S%d", reg_);
+			return;
+		}
+
 		switch( sz_ )
 		{
 		case OpSz.BYTE:
