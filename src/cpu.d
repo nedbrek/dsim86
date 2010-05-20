@@ -176,6 +176,21 @@ public:
 		    "%x", mem_[cast(uint)formIP_EA(ip_)]);
 	}
 
+	void printSegs(out char[] ostr)
+	{
+		uint ct = 0;
+		foreach(seg; segs_)
+		{
+			ostr ~= std.string.format("%04x ", seg.val_);
+			++ct;
+			if( ct == 4 )
+			{
+				ostr ~= "\n";
+				ct = 0;
+			}
+		}
+	}
+
 	void printRegs(out char[] ostr)
 	{
 		uint ct = 0;
