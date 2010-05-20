@@ -20,6 +20,7 @@ protected:
 	alias Inst86 function(Prefixes *p, ubyte op, ArchState a) InstFun;
 
 	InstFun[ubyte] decoder_;
+	InstFun[ubyte] decode2_;
 
 protected: // methods
 	static
@@ -51,8 +52,7 @@ protected: // methods
 		}
 	}
 
-public:
-	this()
+	void buildDecoder()
 	{
 		for(ubyte i = 0; i < 0x3f; ++i)
 		{
@@ -171,6 +171,19 @@ public:
 		decoder_[0xff] = &ffOp;
 	}
 
+	void buildDecoder0F()
+	{
+		for(ubyte i = 0x80; i <= 0x8f; ++i)
+			decode2_[i] = &jmpI;
+	}
+
+public:
+	this()
+	{
+		buildDecoder();
+		buildDecoder0F();
+	}
+
 	Inst86 makeInst(ArchState a)
 	{
 		Prefixes p;
@@ -180,7 +193,17 @@ public:
 		{
 			ubyte op = a.getNextIByte();
 
-			InstFun *ifp = (op in decoder_);
+			InstFun *ifp;
+
+			if( op == 0x0f )
+			{
+				op = a.getNextIByte();
+				ifp = (op in decode2_);
+			}
+			else
+			{
+				ifp = (op in decoder_);
+			}
 
 			if( ifp is null )
 			{
