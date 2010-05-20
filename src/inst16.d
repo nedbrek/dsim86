@@ -84,7 +84,7 @@ public:
 		decoder_[0x6e] = &strF;
 		decoder_[0x6f] = &strF;
 
-		for(ubyte i = 0x70; i < 0x7f; ++i)
+		for(ubyte i = 0x70; i <= 0x7f; ++i)
 		{
 			decoder_[i] = &jmpI;
 		}
