@@ -64,6 +64,9 @@ void main(char[][] argv)
 		if( buf[0] != '\n' )
 			cmd = buf[0];
 
+		// remove trailing whitespace
+		buf = stripr(buf);
+
 		switch( cmd )
 		{
 		case 'n':
@@ -90,6 +93,13 @@ void main(char[][] argv)
 			break;
 
 		case 's':
+			if( buf == "sreg" )
+			{
+				myCpu.printSegs(dstr);
+				writefln('\n', dstr, '\n');
+				break;
+			}
+
 			int ct = 1;
 
 			char[][] words = std.string.split(buf);
