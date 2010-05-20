@@ -57,7 +57,9 @@ ulong cmp(ArchState a, Operand dst, Operand src)
 
 ulong test(ArchState a, Operand dst, Operand src)
 {
-	return 0;
+	ulong tmp = dst.read(a);
+	tmp &= src.read(a);
+	return tmp;
 }
 
 class AluOp : Inst86
