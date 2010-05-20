@@ -179,7 +179,7 @@ public:
 	void printRegs(out char[] ostr)
 	{
 		uint ct = 0;
-		foreach(Reg86 r; gp_)
+		foreach(r; gp_)
 		{
 			ostr ~= std.string.format("%016x ", r.rx);
 			++ct;
