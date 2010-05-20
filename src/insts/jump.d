@@ -13,21 +13,26 @@ protected:
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
-		// jcc ib
-		if( 0x70 <= op && op <= 0x7f )
-		{
-			off_ = signEx(cast(ulong)a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
-			cond_ = cast(CC)(op - 0x70);
-
-			return;
-		}
-
 		// jmp ib
 		if( op == 0xeb )
 		{
 			off_ = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
+			return;
 		}
 		else if( op == 0xe9 )
+		{
+			off_ = getIword(a);
+			return;
+		}
+
+		// jcc ib or iv
+		cond_ = cast(CC)(op & 0xf);
+
+		if( 0x70 <= op && op <= 0x7f )
+		{
+			off_ = signEx(cast(ulong)a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
+		}
+		else
 		{
 			off_ = getIword(a);
 		}
