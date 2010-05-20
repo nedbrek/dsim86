@@ -23,7 +23,7 @@ run: ned86.exe
 	@./ned86.exe
 
 view: test
-	@tail -n10 $(SRCDIR)/test.out
+	@tail -n11 $(SRCDIR)/test.out
 
 test: ned86.exe
 	@./ned86.exe < $(SRCDIR)/in.cmd > $(SRCDIR)/test.out
