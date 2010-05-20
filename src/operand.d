@@ -228,6 +228,7 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 
 		case 2:
 		case 3:
+			mem.seg   = SegReg.Name.SS;
 			mem.base  = new RegOp(RegSet.GP, cast(ubyte)(mrm.rm+4), OpSz.WORD);
 			mem.index = new RegOp(RegSet.GP, 5,        OpSz.WORD);
 			break;
@@ -242,7 +243,10 @@ Operand decodeMRM(ArchState a, ByteModRM mrm, OpSz sz, OpMode mode)
 			if( mrm.mod == 0 )
 				mem.imm = getIword(a);
 			else
+			{
+				mem.seg  = SegReg.Name.SS;
 				mem.base = new RegOp(RegSet.GP, 5, OpSz.WORD);
+			}
 			break;
 
 		case 7:
