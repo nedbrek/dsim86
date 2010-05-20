@@ -86,7 +86,7 @@ void main(char[][] argv)
 
 		case 'r':
 			myCpu.printRegs(dstr);
-			writefln("\n", dstr, "\n");
+			writefln('\n', dstr, '\n');
 			break;
 
 		case 's':
