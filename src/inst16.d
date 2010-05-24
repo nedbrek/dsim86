@@ -50,6 +50,7 @@ protected: // methods
 		case 7: // pop rmv -> mem to mem -> illegal
 		default: return null;
 		}
+		return null;
 	}
 
 	void buildDecoder()
