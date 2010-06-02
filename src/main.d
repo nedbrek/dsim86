@@ -117,6 +117,19 @@ void main(char[][] argv)
 
 			break;
 
+		case 'x':
+			char[][] words = std.string.split(buf);
+
+			ulong addr = std.conv.toInt(words[1]);
+			if( buf != "xp" )
+			{
+				// virtual to phys trans
+			}
+			ubyte *val = myCpu.readMem(addr);
+			writefln("%x:", addr, " %x", *cast(ushort*)(val));
+
+			break;
+
 		default:
 		}
 	}
