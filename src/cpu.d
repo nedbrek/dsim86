@@ -158,6 +158,11 @@ public:
 		mem_[cast(uint)startAddr..cast(uint)(startAddr+img.length)] = img;
 	}
 
+	ubyte* readMem(ulong pa)
+	{
+		return &mem_[cast(uint)(pa)];
+	}
+
 	/// intended for testing
 	void setIP(ulong ip)
 	{
