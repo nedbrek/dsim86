@@ -1,6 +1,6 @@
 s 32
 n
-s 48
+s 50
 r
 sreg
 q
