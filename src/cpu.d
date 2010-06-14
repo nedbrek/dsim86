@@ -97,10 +97,10 @@ protected: // types
 		ubyte * getByteMem (MemSpec* mem)
 		{
 			ulong addr = formEA(this, mem);
+			addr &= 0xffff;
 
 			SegReg *seg = getSegReg(cast(SegReg.Name)(mem.seg));
 			addr += seg.val_ << 4;
-			addr &= 0xffff;
 			
 			return &mem_[cast(uint)(addr)];
 		}
