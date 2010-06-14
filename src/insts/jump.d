@@ -57,6 +57,7 @@ public:
 
 		ulong *ip = a.getOtherReg(RegSet.IP, 0);
 		(*ip) += off_;
+		*ip &= 0xffff;
 	}
 
 	void disasm(ArchState a, out char[] str)
@@ -106,6 +107,7 @@ public:
 		s.val_ = seg_;
 		ulong *ip = a.getOtherReg(RegSet.IP, 0);
 		*ip = off_;
+		*ip &= 0xffff;
 	}
 
 	void disasm(ArchState a, out char[] str)
