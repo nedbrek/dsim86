@@ -306,6 +306,48 @@ public:
 	}
 }
 
+class IncOp : Inst86
+{
+	Operand dst_;
+	bool    dec_;
+
+public:
+	void init(Prefixes *p, ubyte op, ArchState a)
+	{
+		dst_ = new RegOp(RegSet.GP, cast(ubyte)(op & 7), OpSz.WORD);
+		dec_ = (op & 8) != 0;
+	}
+
+	MemType getMemType() { return MemType.NONE; }
+	MemSpec getMemRef()  { MemSpec ret; return ret; }
+
+	uint numDst() { return 1; }
+	uint numSrc() { return 2; }
+
+	ubyte getSrc(uint idx) { return 0; }
+	ubyte getDst(uint idx) { return 0; }
+
+	void execute(ArchState a)
+	{
+	   ushort val = 1;
+	   if( dec_ )
+	   	val = 0xffff;
+		val += dst_.read(a);
+
+		dst_.write(a, val);
+	}
+
+	void disasm(ArchState a, out char[] str)
+	{
+	   if( dec_ )
+	   	str ~= "dec ";
+	   else
+	   	str ~= "inc ";
+
+	   dst_.disasm(str);
+	}
+}
+
 public:
 Inst86 aluFun(Prefixes *p, ubyte op, ArchState a)
 {
@@ -318,6 +360,14 @@ Inst86 aluFun(Prefixes *p, ubyte op, ArchState a)
 Inst86 leaF(Prefixes *p, ubyte op, ArchState a)
 {
 	auto ret = new LeaOp;
+	ret.init(p, op, a);
+
+	return ret;
+}
+
+Inst86 incF(Prefixes *p, ubyte op, ArchState a)
+{
+	auto ret = new IncOp;
 	ret.init(p, op, a);
 
 	return ret;

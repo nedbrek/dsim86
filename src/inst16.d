@@ -63,7 +63,12 @@ protected: // methods
 				decoder_[i] = &stackF;
 		}
 		// 6,7 0..3f
+
 		// 0x40..0x4f
+		for(ubyte i = 0x40; i <= 0x4f; ++i)
+		{
+			decoder_[i] = &incF;
+		}
 
 		for(ubyte i = 0x50; i <= 0x5f; ++i)
 		{
