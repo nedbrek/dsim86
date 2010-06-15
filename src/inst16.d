@@ -65,7 +65,7 @@ protected: // methods
 		// 6,7 0..3f
 		// 0x40..0x4f
 
-		for(ubyte i = 0x50; i < 0x5f; ++i)
+		for(ubyte i = 0x50; i <= 0x5f; ++i)
 		{
 			decoder_[i] = &stackF;
 		}
