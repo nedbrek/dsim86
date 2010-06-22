@@ -291,6 +291,8 @@ bool checkCond(CC cond, ArchState a)
 	case CC.NC: return  (flags & 0x01) == 0;
 	case CC.Z : return  (flags & 0x20) != 0;
 	case CC.NZ: return  (flags & 0x20) == 0;
+	case CC.BE: return  (flags & 0x21) != 0;
+	case CC.A : return  (flags & 0x21) == 0;
 
 	default:
 	}
