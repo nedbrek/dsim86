@@ -268,10 +268,18 @@ ulong signEx(ulong v, OpSz startSz, OpSz endSz)
 void makeFlags(ulong res, ArchState a)
 {
 	ulong *flagP = a.getOtherReg(RegSet.FLAGS, 0);
+
+	// zero
 	if( res == 0 )
 		*flagP |= 0x20;
 	else
 		*flagP &= ~0x20;
+
+	// carry
+	if( res & 0x10000 )
+		*flagP |= 0x1;
+	else
+		*flagP &= ~0x1;
 }
 
 bool checkCond(CC cond, ArchState a)
@@ -279,6 +287,8 @@ bool checkCond(CC cond, ArchState a)
 	ulong flags = *a.getOtherReg(RegSet.FLAGS, 0);
 	switch( cond )
 	{
+	case CC.C : return  (flags & 0x01) != 0;
+	case CC.NC: return  (flags & 0x01) == 0;
 	case CC.Z : return  (flags & 0x20) != 0;
 	case CC.NZ: return  (flags & 0x20) == 0;
 
