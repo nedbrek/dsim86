@@ -166,13 +166,13 @@ public:
 	{
 		switch( sz_ )
 		{
-		case OpSz.BYTE : *a.getByteMem(&mem_) = cast(ubyte)(v);
+		case OpSz.BYTE : *a.getByteMem(&mem_) = cast(ubyte)(v); break;
 
-		case OpSz.WORD : *a.getWordMem(&mem_) = cast(ushort)(v);
+		case OpSz.WORD : *a.getWordMem(&mem_) = cast(ushort)(v); break;
 
-		case OpSz.DWORD: *a.getDWordMem(&mem_) = cast(uint)(v);
+		case OpSz.DWORD: *a.getDWordMem(&mem_) = cast(uint)(v); break;
 
-		case OpSz.QWORD: *a.getQWordMem(&mem_) = v;
+		case OpSz.QWORD: *a.getQWordMem(&mem_) = v; break;
 
 		default:
 		}
