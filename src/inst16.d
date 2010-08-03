@@ -136,7 +136,11 @@ protected: // methods
 
 		decoder_[0xc3] = &retOpF;
 
-		// 0xc4..df
+		// 0xc4..ca
+
+		decoder_[0xcb] = &retOpF;
+
+		// 0xcc..df
 
 		// 0xe0..e3
 
