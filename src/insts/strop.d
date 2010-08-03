@@ -17,6 +17,37 @@ void outs(ArchState a, OpSz sz)
 
 void movs(ArchState a, OpSz sz)
 {
+	ushort *di = a.getWordReg(RegNames.DI);
+	ushort *si = a.getWordReg(RegNames.SI);
+
+	MemSpec memS;
+	memS.seg = SegReg.Name.DS;
+	memS.base = new RegOp(RegSet.GP, RegNames.SI, OpSz.WORD);
+
+	MemSpec memD;
+	memD.seg = SegReg.Name.ES;
+	memD.base = new RegOp(RegSet.GP, RegNames.DI, OpSz.WORD);
+
+	switch( sz )
+	{
+	case OpSz.BYTE:
+		*a.getByteMem(&memD) = *a.getByteMem(&memS);
+
+		// incr DI and SI
+		(*di)++;
+		(*si)++;
+		break;
+
+	case OpSz.WORD:
+		*a.getWordMem(&memD) = *a.getWordMem(&memS);
+
+		// incr DI
+		(*di) += 2;
+		(*si) += 2;
+		break;
+
+	default:
+	}
 }
 
 void cmps(ArchState a, OpSz sz)
