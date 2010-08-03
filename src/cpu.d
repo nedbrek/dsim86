@@ -166,7 +166,8 @@ public:
 	/// intended for testing
 	void setIP(ulong ip)
 	{
-		ip_ = ip;
+		segs_[SegReg.Name.CS].val_ = cast(ushort)(ip >> 16);
+		ip_ = ip & 0xffff;
 	}
 
 	void printRestartIByte()
