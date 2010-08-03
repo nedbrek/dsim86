@@ -42,9 +42,12 @@ public:
 
 class RetOp : Inst86
 {
+	bool isFar_;
+
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
+		isFar_ = (op & 8) != 0;
 	}
 
 	MemType getMemType() { return MemType.NONE; }
@@ -60,11 +63,19 @@ public:
 	{
 		ulong *ip = a.getOtherReg(RegSet.IP, 0);
 		*ip = pop(a, OpSz.WORD);
+
+		if( isFar_ )
+		{
+			SegReg *cs = a.getSegReg(SegReg.Name.CS);
+			cs.val_ = cast(ushort)(pop(a, OpSz.WORD));
+		}
 	}
 
 	void disasm(ArchState a, out char[] str)
 	{
 		str ~= "ret";
+		if( isFar_ )
+			str ~= 'f';
 	}
 }
 
