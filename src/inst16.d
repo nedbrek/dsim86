@@ -116,7 +116,12 @@ protected: // methods
 
 		decoder_[0x8d] = &leaF;
 
-		// 0x8f..0xa3
+		// 0x8f..0xbf
+
+		for(ubyte i = 0xa0; i <= 0xa3; ++i)
+		{
+			decoder_[i] = &movF;
+		}
 
 		for(ubyte i = 0xa4; i <= 0xaf; ++i)
 		{
