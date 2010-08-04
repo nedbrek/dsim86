@@ -9,6 +9,7 @@ class JmpI : Inst86
 protected:
 	ulong off_;
 	CC    cond_ = CC.NONE;
+	bool  isLoop_;
 
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
@@ -19,9 +20,15 @@ public:
 			off_ = signEx(a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
 			return;
 		}
-		else if( op == 0xe9 )
+		else if( op == 0xe9 ) // jmp iw
 		{
 			off_ = getIword(a);
+			return;
+		}
+		else if( op == 0xe2 ) // loop ib
+		{
+			isLoop_ = true;
+			off_ = signEx(cast(ulong)a.getNextIByte(), OpSz.BYTE, OpSz.QWORD);
 			return;
 		}
 
@@ -49,6 +56,16 @@ public:
 
 	void execute(ArchState a)
 	{
+		if( isLoop_ )
+		{
+			ushort *cx = a.getWordReg(RegNames.CX);
+			--(*cx);
+			if( *cx == 0 )
+			{
+				return;
+			}
+		}
+
 		if( cond_ != CC.NONE )
 		{
 			if( !checkCond(cond_, a) )
@@ -62,7 +79,11 @@ public:
 
 	void disasm(ArchState a, out char[] str)
 	{
-		if( cond_ == CC.NONE )
+		if( isLoop_ )
+		{
+			str ~= "loop";
+		}
+		else if( cond_ == CC.NONE )
 			str ~= "jmp";
 		else
 			str ~= std.string.format("j-%x", cond_);
