@@ -60,6 +60,31 @@ public:
 				src_ = reg;
 			}
 		}
+
+		// mov moffs
+		if( 0xa0 <= op && op <= 0xa3 )
+		{
+			MemSpec mem;
+			mem.imm = getIword(a);
+
+			OpSz sz = OpSz.BYTE;
+			if( op & 1 )
+				sz = OpSz.WORD;
+
+			auto mo = new MemOp(sz, mem);
+			auto areg = new RegOp(RegSet.GP, 0, sz);
+
+			if( op & 2 ) // store
+			{
+				dst_ = mo;
+				src_ = areg;
+			}
+			else // load
+			{
+				dst_ = areg;
+				src_ = mo;
+			}
+		}
 	}
 
 	MemType getMemType() { return MemType.NONE; }
