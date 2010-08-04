@@ -142,7 +142,11 @@ protected: // methods
 
 		// 0xcc..df
 
-		// 0xe0..e3
+		// 0xe0..e1
+
+		decoder_[0xe2] = &jmpI;
+
+		// 0xe3
 
 		decoder_[0xe4] = &ioFun;
 		decoder_[0xe5] = &ioFun;
