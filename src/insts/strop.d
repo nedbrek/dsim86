@@ -99,9 +99,9 @@ class StrOp : Inst86
 		INS, OUTS, MOVS, CMPS, STOS, LODS, SCAS
 	}
 	static char[4] names[7] = [
-		"INS ", "OUTS", // io
-		"MOVS", "CMPS", // mem to mem
-		"STOS", "LODS", "SCAS" // reg to mem
+		"ins ", "outs", // io
+		"movs", "cmps", // mem to mem
+		"stos", "lods", "scas" // reg to mem
 	];
 	static StrFun fun[7] = [
 		&ins, &outs, &movs, &cmps, &stos, &lods, &scas
@@ -168,12 +168,12 @@ public:
 	void disasm(ArchState a, out char[] str)
 	{
 		if( rep_ )
-			str ~= "REP ";
+			str ~= "rep ";
 		str ~= names[o_];
 		if( sz_ == OpSz.BYTE )
-			str ~= "B";
+			str ~= "b";
 		else
-			str ~= "W";
+			str ~= "w";
 	}
 }
 
