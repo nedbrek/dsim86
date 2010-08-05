@@ -32,7 +32,7 @@ f000:e0bb:8e mov S0, AX
 f000:e0bd:b9 mov CX, 0x80
 f000:e0c0:bf mov DI, 0x400
 f000:e0c3:fc flags[0] = 0
-f000:e0c4:f3 REP STOSW
+f000:e0c4:f3 rep stosw
 -f000:e0c6:e8 call 3717
 -f000:17e0:55 push BP
 f000:17e1:89 mov BP, SP
