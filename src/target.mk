@@ -19,6 +19,7 @@ MAKETARGET = $(MAKE) --no-print-directory -C $@ -f $(CURDIR)/Makefile \
 
 $(OBJDIR):
 	+@[ -d $@ ] || mkdir -p $@
+	+@[ -d $@/insts ] || mkdir -p $@/insts
 	+@$(MAKETARGET)
 
 # prevent make from building makefiles

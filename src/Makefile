@@ -17,7 +17,8 @@ OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o operand.o \
 
 all: ned86.exe
 
--include Depend.Make
+include $(SRCDIR)/Depend.Make
+include $(SRCDIR)/insts/Depend.Make
 
 run: ned86.exe
 	@./ned86.exe
@@ -32,10 +33,9 @@ test: ned86.exe
 	@diff $(SRCDIR)/test.gold $(SRCDIR)/test.out
 
 %.o : %.d
-	@gdc -c $(CFLAGS) $<
+	@gdc -c $(CFLAGS) -o $@ $<
 
 ned86.exe: $(OBJS)
-	@$(MAKE) -C $(SRCDIR)/insts
 	@gdc $(LFLAGS) -o $@ $^
 
 #--- Begin boilerplate
