@@ -59,13 +59,15 @@ void main(char[][] argv)
 		switch( cmd )
 		{
 		case 'n':
-			ulong curIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
+			bool stepMore;
+			ulong nxtIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
 			do
 			{
 				step(myCpu, op);
+				stepMore = *myCpu.getAA().getOtherReg(RegSet.IP, 0) != nxtIp;
 
 				op = instFact(myCpu.getAA());
-			} while( *myCpu.getAA().getOtherReg(RegSet.IP, 0) == curIp );
+			} while( stepMore );
 
 			myCpu.printRestartIByte();
 			if( op !is null )
