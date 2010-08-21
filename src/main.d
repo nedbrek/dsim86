@@ -7,7 +7,7 @@ import std.file;
 import std.stdio;
 import std.string;
 
-void step(in Cpu c, inout Inst86 i, bool print)
+void step(in Cpu c, in Inst86 i)
 {
 	if( i is null )
 	{
@@ -16,17 +16,6 @@ void step(in Cpu c, inout Inst86 i, bool print)
 	}
 
 	i.execute(c.getAA());
-
-	if( print )
-		c.printNextIByte();
-
-	i = instFact(c.getAA());
-	if( print && i !is null )
-	{
-		char[] dstr;
-		i.disasm(c.getAA(), dstr);
-		writefln(" ", dstr);
-	}
 }
 
 /** x86 simulator
@@ -73,7 +62,9 @@ void main(char[][] argv)
 			ulong curIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
 			do
 			{
-				step(myCpu, op, false);
+				step(myCpu, op);
+
+				op = instFact(myCpu.getAA());
 			} while( *myCpu.getAA().getOtherReg(RegSet.IP, 0) == curIp );
 
 			myCpu.printRestartIByte();
@@ -113,7 +104,18 @@ void main(char[][] argv)
 			}
 
 			for(int i = 0; i < ct; ++i)
-				step(myCpu, op, true);
+			{
+				step(myCpu, op);
+
+				myCpu.printNextIByte();
+
+				op = instFact(myCpu.getAA());
+				if( op !is null )
+				{
+					op.disasm(myCpu.getAA(), dstr);
+					writefln(" ", dstr);
+				}
+			}
 
 			break;
 
