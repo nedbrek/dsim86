@@ -1,6 +1,8 @@
 s 32
 n
-s 3202
+s 9
+n
+s 12
 r
 sreg
 q
