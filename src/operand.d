@@ -71,7 +71,6 @@ public:
 		default:
 			return *(a.getQWordReg(reg_));
 		}
-		return 0; // unreachable
 	}
 
 	void write(ArchState a, ulong v)

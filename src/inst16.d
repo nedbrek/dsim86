@@ -43,14 +43,13 @@ protected: // methods
 		case 5: return null; //Ned jmpf mfp
 
 		case 6:
-			auto pushFF = new StackOp;
+			auto pushFF = new insts.stack.StackOp;
 			pushFF.initFF(p, mrm, a);
 			return pushFF;
 
 		case 7: // pop rmv -> mem to mem -> illegal
 		default: return null;
 		}
-		return null;
 	}
 
 	void buildDecoder()

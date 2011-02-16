@@ -9,11 +9,14 @@ VPATH = $(SRCDIR)
 #--- Normal make stuff here!
 .PHONY: all run test view
 
-CFLAGS := -I$(SRCDIR) -Wall -g
+DC := dmd
+LINK := dmd
+#CFLAGS := -I$(SRCDIR) -Wall -g
+CFLAGS := -I$(shell cygpath -m $(SRCDIR)) -w -g
 LFLAGS := -g
-OBJS := main.o archstate.o cpu.o inst.o inst16.o instfact.o operand.o \
-   insts/alu.o insts/call.o insts/flagop.o insts/io.o insts/jump.o \
-   insts/mov.o insts/prefix.o insts/segop.o insts/stack.o insts/strop.o
+OBJS := main.obj archstate.obj cpu.obj inst.obj inst16.obj instfact.obj operand.obj \
+   insts/alu.obj insts/call.obj insts/flagop.obj insts/io.obj insts/jump.obj \
+   insts/mov.obj insts/prefix.obj insts/segop.obj insts/stack.obj insts/strop.obj
 
 all: ned86.exe
 
@@ -32,11 +35,11 @@ test: ned86.exe
 	@echo diff test.gold test.out
 	@diff $(SRCDIR)/test.gold $(SRCDIR)/test.out
 
-%.o : %.d
-	@gdc -c $(CFLAGS) -o $@ $<
+%.obj : %.d
+	@$(DC) -c $(CFLAGS) -of$@ $(shell cygpath -m $<)
 
 ned86.exe: $(OBJS)
-	@gdc $(LFLAGS) -o $@ $^
+	@$(LINK) $(LFLAGS) -of$@ $^
 
 #--- Begin boilerplate
 endif
