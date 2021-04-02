@@ -1,3 +1,5 @@
+all: ned86.exe
+
 #--- Begin boilerplate
 ifeq (,$(filter _%,$(notdir $(CURDIR)))) 
 include target.mk
@@ -9,19 +11,18 @@ VPATH = $(SRCDIR)
 #--- Normal make stuff here!
 .PHONY: all run test view
 
-DC := dmd
-LINK := dmd
+DC := gdc
+LINK := gdc
 #CFLAGS := -I$(SRCDIR) -Wall -g
-CFLAGS := -I$(shell cygpath -m $(SRCDIR)) -w -g
+#CFLAGS := -I$(shell cygpath -m $(SRCDIR)) -w -g
+CFLAGS := -I$(SRCDIR) -w -g
 LFLAGS := -g
 OBJS := main.obj archstate.obj cpu.obj inst.obj inst16.obj instfact.obj operand.obj \
    insts/alu.obj insts/call.obj insts/flagop.obj insts/io.obj insts/jump.obj \
    insts/mov.obj insts/prefix.obj insts/segop.obj insts/stack.obj insts/strop.obj
 
-all: ned86.exe
-
-include $(SRCDIR)/Depend.Make
-include $(SRCDIR)/insts/Depend.Make
+-include $(SRCDIR)/Depend.Make
+-include $(SRCDIR)/insts/Depend.Make
 
 run: ned86.exe
 	@./ned86.exe
@@ -35,11 +36,12 @@ test: ned86.exe
 	@echo diff test.gold test.out
 	@diff $(SRCDIR)/test.gold $(SRCDIR)/test.out
 
+#@$(DC) -c $(CFLAGS) -of$@ $(shell cygpath -m $<)
 %.obj : %.d
-	@$(DC) -c $(CFLAGS) -of$@ $(shell cygpath -m $<)
+	@$(DC) -c $(CFLAGS) -o$@ $<
 
 ned86.exe: $(OBJS)
-	@$(LINK) $(LFLAGS) -of$@ $^
+	@$(LINK) $(LFLAGS) -o$@ $^
 
 #--- Begin boilerplate
 endif
