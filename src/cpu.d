@@ -172,14 +172,14 @@ public:
 
 	void printRestartIByte()
 	{
-		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", restartIp_, ':',
-		    "%x", mem_[cast(uint)formIP_EA(restartIp_)]);
+		writef("%04x:%04x:%08x", segs_[SegReg.Name.CS].val_, restartIp_,
+		    mem_[cast(uint)formIP_EA(restartIp_)]);
 	}
 
 	void printNextIByte()
 	{
-		writef("%04x", segs_[SegReg.Name.CS].val_, ":", "%04x", ip_, ':',
-		    "%02x", mem_[cast(uint)formIP_EA(ip_)]);
+		writef("%04x:%04x:%02x", segs_[SegReg.Name.CS].val_, ip_,
+		    mem_[cast(uint)formIP_EA(ip_)]);
 	}
 
 	void printSegs(out char[] ostr)

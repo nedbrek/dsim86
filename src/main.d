@@ -7,7 +7,7 @@ import std.file;
 import std.stdio;
 import std.string;
 
-void step(in Cpu c, in Inst86 i)
+void step(Cpu c, Inst86 i)
 {
 	if( i is null )
 	{
@@ -29,7 +29,7 @@ void main(char[][] argv)
 	cpu.Parms p;
 	myCpu.init(&p);
 
-	void[] img = read("c:/ned/dev/gnu/bochs_cvs/bochs/bios/BIOS-bochs-latest");
+	void[] img = read("/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-latest");
 	myCpu.loadImage(cast(ubyte[])img, 0xe_0000);
 
 	writefln("Start execute");
@@ -41,7 +41,7 @@ void main(char[][] argv)
 	if( op !is null )
 	{
 		op.disasm(myCpu.getAA(), dstr);
-		writefln(" ", dstr);
+		writefln(" %s", dstr);
 	}
 
 	char cmd = 's';
@@ -49,12 +49,12 @@ void main(char[][] argv)
 	while( 1 )
 	{
 		writef("-");
-		char[] buf = readln();
+		string buf = readln();
 		if( buf[0] != '\n' )
 			cmd = buf[0];
 
 		// remove trailing whitespace
-		buf = stripr(buf);
+		buf = strip(buf);
 
 		switch( cmd )
 		{
@@ -73,7 +73,7 @@ void main(char[][] argv)
 			if( op !is null )
 			{
 				op.disasm(myCpu.getAA(), dstr);
-				writefln(" ", dstr);
+				writefln(" %s", dstr);
 			}
 
 			break;
@@ -82,23 +82,23 @@ void main(char[][] argv)
 
 		case 'r':
 			myCpu.printRegs(dstr);
-			writefln('\n', dstr, '\n');
+			writefln("\n%s\n", dstr);
 			break;
 
 		case 's':
 			if( buf == "sreg" )
 			{
 				myCpu.printSegs(dstr);
-				writefln('\n', dstr, '\n');
+				writefln("\n%s\n", dstr);
 				break;
 			}
 
 			int ct = 1;
 
-			char[][] words = std.string.split(buf);
+			string[] words = std.string.split(buf);
 			if( words.length == 2 )
 			{
-				ct = std.conv.toInt(words[1]);
+				ct = std.conv.to!int(words[1]);
 			}
 			else if( words.length > 2 )
 			{
@@ -122,9 +122,9 @@ void main(char[][] argv)
 			break;
 
 		case 'x':
-			char[][] words = std.string.split(buf);
+			string[] words = std.string.split(buf);
 
-			ulong addr = std.conv.toInt(words[1]);
+			ulong addr = std.conv.to!int(words[1]);
 			if( buf != "xp" )
 			{
 				// virtual to phys trans

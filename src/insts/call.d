@@ -4,6 +4,7 @@ import archstate;
 import inst;
 import operand;
 import std.string;
+import std.conv;
 
 class CallRel : Inst86
 {
@@ -36,7 +37,7 @@ public:
 	void disasm(ArchState a, out char[] str)
 	{
 		str ~= "call ";
-		str ~= std.string.toString(off_, 16u);
+		str ~= std.conv.to!string(off_, 16u);
 	}
 }
 

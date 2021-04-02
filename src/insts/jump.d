@@ -3,6 +3,7 @@ module jump;
 import archstate;
 import inst;
 import std.string;
+import std.conv;
 
 class JmpI : Inst86
 {
@@ -100,7 +101,7 @@ Inst86 jmpI(Prefixes *p, ubyte op, ArchState a)
 	return ret;
 }
 
-class FarJmp : public Inst86
+class FarJmp : Inst86
 {
 protected:
 	uint   off_;
@@ -134,9 +135,9 @@ public:
 	void disasm(ArchState a, out char[] str)
 	{
 		str ~= "jmpf ";
-		str ~= std.string.toString(cast(ulong)seg_, 16u);
+		str ~= std.conv.to!string(cast(ulong)seg_, 16u);
 		str ~= ":";
-		str ~= std.string.toString(cast(ulong)off_, 16u);
+		str ~= std.conv.to!string(cast(ulong)off_, 16u);
 	}
 }
 

@@ -2,6 +2,7 @@ module operand;
 
 import archstate;
 import std.string;
+import std.conv;
 
 class ImmOp : Operand
 {
@@ -16,10 +17,10 @@ public:
 	ulong read(ArchState a) { return i_; }
 	void  write(ArchState a, ulong v) {}
 
-	void disasm(inout char[] str)
+	void disasm(char[] str)
 	{
 		str ~= "0x";
-		str ~= std.string.toString(i_, 16u);
+		str ~= std.conv.to!string(i_, 16u);
 	}
 }
 
@@ -29,14 +30,14 @@ class RegOp : Operand
 	ubyte  reg_;
 	OpSz   sz_;
 
-	static char[] byteRegs[] = [
+	static string byteRegs[] = [
 		"AL", "CL", "DL", "BL",
 		"AH", "CH", "DH", "BH",
 		"SPL", "BPL", "SIL", "DIL",
 		"R8L", "R9L", "R10L", "R11L",
 		"R12L", "R13L", "R14L", "R15L"
 	];
-	static char[] wordRegs[] = [
+	static string wordRegs[] = [
 		"AX", "CX", "DX", "BX",
 		"SP", "BP", "SI", "DI"
 	];
@@ -99,7 +100,7 @@ public:
 		}
 	}
 
-	void disasm(inout char[] str)
+	void disasm(char[] str)
 	{
 		if( set_ == RegSet.SEG )
 		{
@@ -177,7 +178,7 @@ public:
 		}
 	}
 
-	void disasm(inout char[] str)
+	void disasm(char[] str)
 	{
 		str ~= "[";
 

@@ -188,7 +188,7 @@ interface Operand
    ulong read (ArchState a);
    void  write(ArchState a, ulong v);
 
-   void disasm(inout char[] str);
+   void disasm(char[] str);
 }
 
 /// specify memory reference
@@ -299,7 +299,7 @@ bool checkCond(CC cond, ArchState a)
 	return false;
 }
 
-ulong formEA(ArchState a, in MemSpec *mem)
+ulong formEA(ArchState a, MemSpec *mem)
 {
 	ulong addr = 0;
 	if( mem.index )
