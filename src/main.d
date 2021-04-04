@@ -29,8 +29,8 @@ void main(char[][] argv)
 	cpu.Parms p;
 	myCpu.init(&p);
 
-	void[] img = read("/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-latest");
-	myCpu.loadImage(cast(ubyte[])img, 0xe_0000);
+	void[] img = read("/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-legacy");
+	myCpu.loadImage(cast(ubyte[])img, 0xf_0000);
 
 	writefln("Start execute");
 	char[] dstr;

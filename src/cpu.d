@@ -172,7 +172,7 @@ public:
 
 	void printRestartIByte()
 	{
-		writef("%04x:%04x:%08x", segs_[SegReg.Name.CS].val_, restartIp_,
+		writef("%04x:%04x:%02x", segs_[SegReg.Name.CS].val_, restartIp_,
 		    mem_[cast(uint)formIP_EA(restartIp_)]);
 	}
 
