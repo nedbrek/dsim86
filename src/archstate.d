@@ -188,7 +188,7 @@ interface Operand
    ulong read (ArchState a);
    void  write(ArchState a, ulong v);
 
-   void disasm(char[] str);
+   void disasm(ref char[] str);
 }
 
 /// specify memory reference

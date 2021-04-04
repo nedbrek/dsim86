@@ -115,7 +115,7 @@ void main(char[][] argv)
 				if( op !is null )
 				{
 					op.disasm(myCpu.getAA(), dstr);
-					writefln(" ", dstr);
+					writefln(" %s", dstr);
 				}
 			}
 

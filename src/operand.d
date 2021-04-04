@@ -17,7 +17,7 @@ public:
 	ulong read(ArchState a) { return i_; }
 	void  write(ArchState a, ulong v) {}
 
-	void disasm(char[] str)
+	void disasm(ref char[] str)
 	{
 		str ~= "0x";
 		str ~= std.conv.to!string(i_, 16u);
@@ -100,7 +100,7 @@ public:
 		}
 	}
 
-	void disasm(char[] str)
+	void disasm(ref char[] str)
 	{
 		if( set_ == RegSet.SEG )
 		{
@@ -178,7 +178,7 @@ public:
 		}
 	}
 
-	void disasm(char[] str)
+	void disasm(ref char[] str)
 	{
 		str ~= "[";
 
