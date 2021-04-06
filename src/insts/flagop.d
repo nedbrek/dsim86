@@ -6,12 +6,12 @@ import std.string;
 
 class FlagOp : Inst86
 {
-	uint bit_;
-	bool val_;
+	ubyte op_;
 
 public:
 	void init(in Prefixes *p, ubyte op, ArchState a)
 	{
+		op_ = op;
 	}
 
 	MemType getMemType() { return MemType.NONE; }
@@ -29,7 +29,21 @@ public:
 
 	void disasm(ArchState a, out char[] str)
 	{
-		str ~= std.string.format("flags[%d] = %d", bit_, val_ ? 1:0);
+		// check for complement carry
+		if (op_ == 0xf5)
+		{
+			str ~= "cmc";
+			return;
+		}
+
+		// clear/set
+		if (op_ & 1)
+			str ~= "st";
+		else
+			str ~= "cl";
+
+		const char[] flag_name = ['c', 'i', 'd'];
+		str ~= flag_name[(op_ >> 1) & 3];
 	}
 }
 

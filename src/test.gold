@@ -19,7 +19,7 @@ f000:e077:e6 71 out 0x71, AL
 f000:e079:88 d8 mov AL, BL
 f000:e07b:3c 00 cmp AL, 0x0
 f000:e07d:74 24 jz  0x0000000000000024
-f000:e0a3:fa flags[0] = 0
+f000:e0a3:fa cli
 f000:e0a4:b8 fe ff mov AX, 0xFFFE
 f000:e0a7:89 c4 mov SP, AX
 f000:e0a9:31 c0 xor AX, AX
@@ -31,7 +31,7 @@ f000:e0b6:75 03 jnz 0x0000000000000003
 f000:e0bb:8e c0 mov ES, AX
 f000:e0bd:b9 80 00 mov CX, 0x80
 f000:e0c0:bf 00 04 mov DI, 0x400
-f000:e0c3:fc flags[0] = 0
+f000:e0c3:fc cld
 f000:e0c4:f3 ab rep stosw
 -f000:e0c6:e8 call 35C3
 -f000:168c:55 push BP
