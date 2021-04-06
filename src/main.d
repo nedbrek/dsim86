@@ -41,7 +41,7 @@ void main(char[][] argv)
 	if( op !is null )
 	{
 		op.disasm(myCpu.getAA(), dstr);
-		writefln(" %s", dstr);
+		writefln("%s", dstr);
 	}
 
 	char cmd = 's';
@@ -61,6 +61,8 @@ void main(char[][] argv)
 		case 'n':
 			bool stepMore;
 			ulong nxtIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
+			const bool old_print = myCpu.printIBytes();
+			myCpu.setPrintIBytes(false);
 			do
 			{
 				step(myCpu, op);
@@ -69,11 +71,12 @@ void main(char[][] argv)
 				op = instFact(myCpu.getAA());
 			} while( stepMore );
 
+			myCpu.setPrintIBytes(old_print);
 			myCpu.printRestartIByte();
 			if( op !is null )
 			{
 				op.disasm(myCpu.getAA(), dstr);
-				writefln(" %s", dstr);
+				writefln("%s", dstr);
 			}
 
 			break;
@@ -115,7 +118,7 @@ void main(char[][] argv)
 				if( op !is null )
 				{
 					op.disasm(myCpu.getAA(), dstr);
-					writefln(" %s", dstr);
+					writefln("%s", dstr);
 				}
 			}
 

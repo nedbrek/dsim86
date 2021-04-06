@@ -6,6 +6,7 @@ import std.stdio;
 struct Parms
 {
 	uint memsz = 32 * 1024 * 1024;
+	bool print_ibytes = true;
 
 	invariant()
 	{
@@ -31,6 +32,8 @@ protected: // data
 	ulong restartIp_;
 
 	ubyte[] mem_;
+
+	bool print_ibytes_ = false;
 
 protected: // methods
 	ulong formIP_EA(ulong ip)
@@ -117,8 +120,10 @@ protected: // types
 		/// advance IP
 		ubyte getNextIByte()
 		{
-			ubyte ret = peekNextIByte();
+			const ubyte ret = peekNextIByte();
 			++ip_;
+			if (print_ibytes_)
+				writef("%02x ", ret);
 
 			return ret;
 		}
@@ -144,7 +149,11 @@ public:
 	void init(Parms *p)
 	{
 		mem_ = new ubyte[p.memsz];
+		print_ibytes_ = p.print_ibytes;
 	}
+
+	bool printIBytes() { return print_ibytes_; }
+	void setPrintIBytes(bool v) { print_ibytes_ = v; }
 
 	ArchState getAA() { return aa_; }
 
@@ -172,14 +181,13 @@ public:
 
 	void printRestartIByte()
 	{
-		writef("%04x:%04x:%02x", segs_[SegReg.Name.CS].val_, restartIp_,
+		writef("%04x:%04x:%02x ", segs_[SegReg.Name.CS].val_, restartIp_,
 		    mem_[cast(uint)formIP_EA(restartIp_)]);
 	}
 
 	void printNextIByte()
 	{
-		writef("%04x:%04x:%02x", segs_[SegReg.Name.CS].val_, ip_,
-		    mem_[cast(uint)formIP_EA(ip_)]);
+		writef("%04x:%04x:", segs_[SegReg.Name.CS].val_, ip_);
 	}
 
 	void printSegs(out char[] ostr)
