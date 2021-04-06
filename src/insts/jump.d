@@ -5,6 +5,25 @@ import inst;
 import std.string;
 import std.conv;
 
+static string[] cc_names = [
+	"o",
+	"no",
+	"c",
+	"nc",
+	"z",
+	"nz",
+	"be",
+	"a",
+	"s",
+	"ns",
+	"pe",
+	"po"
+	"l",
+	"nl"
+	"le",
+	"g"
+];
+
 class JmpI : Inst86
 {
 protected:
@@ -87,7 +106,7 @@ public:
 		else if( cond_ == CC.NONE )
 			str ~= "jmp";
 		else
-			str ~= std.string.format("j-%x", cond_);
+			str ~= std.string.format("j%-2s", cc_names[cond_]);
 
 		str ~= std.string.format(" 0x%016x", off_);
 	}
