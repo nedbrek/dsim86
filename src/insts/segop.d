@@ -5,6 +5,15 @@ import inst;
 import operand;
 import std.string;
 
+static string[] seg_names = [
+	"ES",
+	"CS",
+	"SS",
+	"DS",
+	"FS",
+	"GS"
+];
+
 class MovSeg : Inst86
 {
 protected:
@@ -46,12 +55,12 @@ public:
 	{
 		str ~= "mov ";
 		if( isLoad_ )
-			str ~= std.string.format("S%d, ", seg_);
+			str ~= std.string.format("%s, ", seg_names[seg_]);
 
 		val_.disasm(str);
 
 		if( !isLoad_ )
-			str ~= std.string.format(", S%d", seg_);
+			str ~= std.string.format(", %s", seg_names[seg_]);
 	}
 }
 
