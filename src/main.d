@@ -21,18 +21,21 @@ void step(Cpu c, Inst86 i)
 /** x86 simulator
  *
  */
-void main(char[][] argv)
+void main(string[] argv)
 {
-	writefln("Begin");
+	writefln("Begin %s", argv[0]);
 
 	Cpu myCpu = new Cpu;
 	cpu.Parms p;
 	myCpu.init(&p);
 
-	void[] img = read("/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-legacy");
+	string path = "/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-legacy";
+	if (argv.length > 1)
+		path = argv[1];
+	void[] img = read(path);
 	myCpu.loadImage(cast(ubyte[])img, 0xf_0000);
 
-	writefln("Start execute");
+	writefln("Start execute %s", path);
 	char[] dstr;
 
 	myCpu.printNextIByte();
