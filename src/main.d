@@ -1,5 +1,6 @@
 import archstate;
 import cpu;
+import dos;
 import inst;
 import instfact;
 import std.conv;
@@ -32,8 +33,19 @@ void main(string[] argv)
 	string path = "/usr/local/ned/dev/gnu/bochs-code/bochs/bios/BIOS-bochs-legacy";
 	if (argv.length > 1)
 		path = argv[1];
-	void[] img = read(path);
-	myCpu.loadImage(cast(ubyte[])img, 0xf_0000);
+
+	string ext = std.path.extension(path);
+	writefln("Ext: '%s'", ext);
+	if (ext.toLower == ".exe")
+	{
+		//dos.dumpExe(path);
+		dos.loadExe(path, myCpu);
+	}
+	else
+	{
+		ubyte[] img = cast(ubyte[])read(path);
+		myCpu.loadImage(img, 0xf_0000);
+	}
 
 	writefln("Start execute %s", path);
 	char[] dstr;
