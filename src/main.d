@@ -73,6 +73,42 @@ void main(string[] argv)
 
 		switch( cmd )
 		{
+		case 'd':
+			auto aa = myCpu.getAA();
+			ulong orig_ip = *aa.getOtherReg(RegSet.IP, 0);
+			ushort orig_cs = aa.getSegReg(SegReg.Name.CS).val_;
+
+			int ct = 1;
+			string[] words = std.string.split(buf);
+			if( words.length == 2 )
+			{
+				ct = std.conv.to!int(words[1]);
+			}
+			else if( words.length > 2 )
+			{
+				writefln("Usage: %s [ct]", words[0]);
+			}
+
+			for (int i = 0; i < ct; ++i)
+			{
+				myCpu.printNextIByte();
+
+				op = instFact(myCpu.getAA());
+				if( op !is null )
+				{
+					op.disasm(myCpu.getAA(), dstr);
+					writefln("%s", dstr);
+				}
+				else
+				{
+					writefln("(null)");
+				}
+			}
+
+			 *aa.getOtherReg(RegSet.IP, 0) = orig_ip;
+			 aa.getSegReg(SegReg.Name.CS).val_ = orig_cs;
+			break;
+
 		case 'n':
 			bool stepMore;
 			ulong nxtIp = *myCpu.getAA().getOtherReg(RegSet.IP, 0);
@@ -148,7 +184,7 @@ void main(string[] argv)
 				// virtual to phys trans
 			}
 			ubyte *val = myCpu.readMem(addr);
-			writefln("%x:", addr, " %x", *cast(ushort*)(val));
+			writefln("%x: %02x %02x", addr, val[0], val[1]);
 
 			break;
 
