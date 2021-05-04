@@ -18,7 +18,7 @@ LINK := gdc
 CFLAGS := -I$(SRCDIR) -w -g
 LFLAGS := -g
 OBJS := main.obj archstate.obj cpu.obj dos.obj inst.obj inst16.obj instfact.obj operand.obj \
-   insts/alu.obj insts/call.obj insts/flagop.obj insts/io.obj insts/jump.obj \
+   insts/alu.obj insts/call.obj insts/flagop.obj insts/io.obj insts/intr.obj insts/jump.obj \
    insts/mov.obj insts/prefix.obj insts/segop.obj insts/stack.obj insts/strop.obj
 
 -include $(SRCDIR)/Depend.Make

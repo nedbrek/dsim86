@@ -5,6 +5,7 @@ import inst;
 import insts.alu;
 import insts.call;
 import insts.flagop;
+import insts.intr;
 import insts.io;
 import insts.jump;
 import insts.mov;
@@ -145,6 +146,10 @@ protected: // methods
 		decoder_[0xcb] = &retOpF;
 
 		// 0xcc..df
+		decoder_[0xcc] = &intOpF;
+		decoder_[0xcd] = &intOpF;
+		decoder_[0xce] = &intOpF;
+		decoder_[0xcf] = &intOpF;
 
 		// 0xe0..e1
 
