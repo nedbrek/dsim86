@@ -11,6 +11,7 @@ import insts.jump;
 import insts.mov;
 import insts.prefix;
 import insts.segop;
+import insts.sft;
 import insts.stack;
 import insts.strop;
 import std.stdio;
@@ -150,6 +151,11 @@ protected: // methods
 		decoder_[0xcd] = &intOpF;
 		decoder_[0xce] = &intOpF;
 		decoder_[0xcf] = &intOpF;
+
+		decoder_[0xd0] = &sftI;
+		decoder_[0xd1] = &sftI;
+		decoder_[0xd2] = &sftI;
+		decoder_[0xd3] = &sftI;
 
 		// 0xe0..e1
 
